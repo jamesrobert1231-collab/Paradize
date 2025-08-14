@@ -1,0 +1,210 @@
+{
+  "name": "Viren Live Automation Hub",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "viren-webhook",
+        "methods": ["POST"]
+      },
+      "id": "http-trigger",
+      "name": "HTTP Command",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 200]
+    },
+    {
+      "parameters": {
+        "updates": ["message"]
+      },
+      "id": "telegram-trigger",
+      "name": "Telegram Command",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [250, 400],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "mergeByIndex"
+      },
+      "id": "merge",
+      "name": "Merge Commands",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 1,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "operation": "chat",
+        "model": "gpt-4o-mini",
+        "prompt": "Convert input: {{$json[\"message\"] || $json[\"body\"]}} into actionable repo task with file content if needed."
+      },
+      "id": "openai",
+      "name": "Viren AI",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [700, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "owner": "{{$env.GITHUB_OWNER}}",
+        "repository": "{{$env.GITHUB_REPO}}",
+        "filePath": "tasks/{{$json.fileName}}",
+        "fileContent": "{{$json.fileContent}}",
+        "commitMessage": "Viren task: {{$json.commitMessage}}"
+      },
+      "id": "github",
+      "name": "GitHub Commit",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 2,
+      "position": [900, 300],
+      "credentials": {
+        "githubApi": {
+          "id": "github-credentials",
+          "name": "GitHub API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "{{$json.chatId}}",
+        "text": "✅ Task processed and pushed: {{$json.commitMessage}}"
+      },
+      "id": "telegram-send",
+      "name": "Telegram Confirm",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1100, 400],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "responseMode": "onReceived",
+        "responseData": "Task processed and pushed."
+      },
+      "id": "http-response",
+      "name": "HTTP Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1100, 200]
+    },
+    {
+      "parameters": {},
+      "id": "error-trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [250, 600]
+    },
+    {
+      "parameters": {
+        "chatId": "<YOUR_CHAT_ID>",
+        "text": "❌ Error: {{$json.error.message}}"
+      },
+      "id": "telegram-error",
+      "name": "Telegram Error",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [500, 600],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "HTTP Command": {
+      "main": [
+        [
+          {
+            "node": "Merge Commands",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Command": {
+      "main": [
+        [
+          {
+            "node": "Merge Commands",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Commands": {
+      "main": [
+        [
+          {
+            "node": "Viren AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Viren AI": {
+      "main": [
+        [
+          {
+            "node": "GitHub Commit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub Commit": {
+      "main": [
+        [
+          {
+            "node": "Telegram Confirm",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Telegram Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
