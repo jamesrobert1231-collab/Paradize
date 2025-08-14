@@ -20,17 +20,17 @@ class PrometheusMCPDemo:
         return {
             "workspaces": [
                 {
-                    "workspace_id": "ws-12345678-abcd-1234-efgh-123456789012",
+                    "workspace_id": self.demo_workspace_id,
                     "alias": "production-cluster",
                     "status": "ACTIVE",
-                    "arn": "arn:aws:aps:us-east-1:123456789012:workspace/ws-12345678-abcd-1234-efgh-123456789012",
+                    "arn": f"arn:aws:aps:{self.demo_region}:123456789012:workspace/{self.demo_workspace_id}",
                     "created_at": "2024-01-15T10:30:00Z"
                 },
                 {
                     "workspace_id": "ws-87654321-dcba-4321-hgfe-210987654321",
                     "alias": "staging-cluster",
                     "status": "ACTIVE",
-                    "arn": "arn:aws:aps:us-east-1:123456789012:workspace/ws-87654321-dcba-4321-hgfe-210987654321",
+                    "arn": f"arn:aws:aps:{self.demo_region}:123456789012:workspace/ws-87654321-dcba-4321-hgfe-210987654321",
                     "created_at": "2024-01-20T14:45:00Z"
                 }
             ]
@@ -109,8 +109,8 @@ class PrometheusMCPDemo:
         """Demonstrate GetServerInfo tool"""
         return {
             "server_info": {
-                "url": "https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-12345678-abcd-1234-efgh-123456789012",
-                "region": "us-east-1",
+                "url": f"https://aps-workspaces.{self.demo_region}.amazonaws.com/workspaces/{self.demo_workspace_id}",
+                "region": self.demo_region,
                 "profile": "default",
                 "service": "aps"
             }
