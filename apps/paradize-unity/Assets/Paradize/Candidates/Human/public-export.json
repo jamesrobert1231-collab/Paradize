@@ -1,0 +1,121 @@
+{
+  "sourceSha256": "3f5419c8cc25582ed6cf7a852188484e6c7697a9a5ca4b304fc54f4f91d5eb0d",
+  "publicSha256": "c12d0bb1a9b9ff0412ef0c8b3e1cb56362fd88763c529a5306f78d76cd75268f",
+  "normalizedPaths": [
+    {
+      "node": "P",
+      "replacement": "source/human-candidate.blend"
+    },
+    {
+      "node": "FileName",
+      "replacement": "Textures/young_lightskinned_female_diffuse.png"
+    },
+    {
+      "node": "RelativeFilename",
+      "replacement": "Textures/young_lightskinned_female_diffuse.png"
+    },
+    {
+      "node": "FileName",
+      "replacement": "Textures/bob01_diffuse.png"
+    },
+    {
+      "node": "RelativeFilename",
+      "replacement": "Textures/bob01_diffuse.png"
+    },
+    {
+      "node": "FileName",
+      "replacement": "Textures/bob01_diffuse.png"
+    },
+    {
+      "node": "RelativeFilename",
+      "replacement": "Textures/bob01_diffuse.png"
+    },
+    {
+      "node": "FileName",
+      "replacement": "Textures/female_casualsuit01_diffuse.png"
+    },
+    {
+      "node": "RelativeFilename",
+      "replacement": "Textures/female_casualsuit01_diffuse.png"
+    },
+    {
+      "node": "FileName",
+      "replacement": "Textures/brown_eye.png"
+    },
+    {
+      "node": "RelativeFilename",
+      "replacement": "Textures/brown_eye.png"
+    },
+    {
+      "node": "FileName",
+      "replacement": "Textures/shoes01_diffuse.png"
+    },
+    {
+      "node": "RelativeFilename",
+      "replacement": "Textures/shoes01_diffuse.png"
+    },
+    {
+      "node": "P",
+      "replacement": "Textures/young_lightskinned_female_diffuse.png"
+    },
+    {
+      "node": "Filename",
+      "replacement": "Textures/young_lightskinned_female_diffuse.png"
+    },
+    {
+      "node": "RelativeFilename",
+      "replacement": "Textures/young_lightskinned_female_diffuse.png"
+    },
+    {
+      "node": "P",
+      "replacement": "Textures/bob01_diffuse.png"
+    },
+    {
+      "node": "Filename",
+      "replacement": "Textures/bob01_diffuse.png"
+    },
+    {
+      "node": "RelativeFilename",
+      "replacement": "Textures/bob01_diffuse.png"
+    },
+    {
+      "node": "P",
+      "replacement": "Textures/female_casualsuit01_diffuse.png"
+    },
+    {
+      "node": "Filename",
+      "replacement": "Textures/female_casualsuit01_diffuse.png"
+    },
+    {
+      "node": "RelativeFilename",
+      "replacement": "Textures/female_casualsuit01_diffuse.png"
+    },
+    {
+      "node": "P",
+      "replacement": "Textures/brown_eye.png"
+    },
+    {
+      "node": "Filename",
+      "replacement": "Textures/brown_eye.png"
+    },
+    {
+      "node": "RelativeFilename",
+      "replacement": "Textures/brown_eye.png"
+    },
+    {
+      "node": "P",
+      "replacement": "Textures/shoes01_diffuse.png"
+    },
+    {
+      "node": "Filename",
+      "replacement": "Textures/shoes01_diffuse.png"
+    },
+    {
+      "node": "RelativeFilename",
+      "replacement": "Textures/shoes01_diffuse.png"
+    }
+  ],
+  "decodedPropertiesVerified": 8889,
+  "geometryMaterialsAnimationUnchanged": true,
+  "unityReimportQualified": false
+}

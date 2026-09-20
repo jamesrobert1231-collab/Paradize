@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { stagePipelineExport } from '../../modules/tech-help/staging.mjs';
+const [file, origin, directory] = process.argv.slice(2);
+if (!file || !origin || !directory || process.argv.length !== 5) throw new Error('Usage: tech-help.mjs EXPORT_JSON EXPECTED_ORIGIN PRIVATE_STAGING_DIRECTORY');
+const input = path.resolve(file);
+const before = fs.lstatSync(input);
+if (!before.isFile() || before.isSymbolicLink() || before.size > 4 * 1024 * 1024) throw new Error('Invalid export file');
+const bytes = fs.readFileSync(input);
+const after = fs.lstatSync(input);
+if (before.ino !== after.ino || before.mtimeMs !== after.mtimeMs || before.size !== bytes.length || after.size !== bytes.length) throw new Error('Export changed while reading');
+const result = stagePipelineExport(path.resolve(directory), bytes, origin);
+console.log(JSON.stringify({ imported: result.imported, exportSha256: result.exportSha256, capturedAt: result.capturedAt, state: result.state, coverage: result.coverage, recordCount: result.records.length, activationGranted: false, dataCutoverComplete: false }));

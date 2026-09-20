@@ -1,0 +1,148 @@
+{
+  "licenseEvidence": "https://static.makehumancommunity.org/assets/assetpacks/makehuman_system_assets.html",
+  "archiveSha256": "b542127a8e25547c7c29c19f2d1d2adb9a664c80396ecd694095dbc8028a0107",
+  "license": "CC0",
+  "files": [
+    {
+      "path": "skins/young_caucasian_female/young_caucasian_female.mhmat",
+      "bytes": 1464,
+      "sha256": "0bdea7786201f0b1132a24088336a97496ccdc54e9984db65d253a6a6d66f24f"
+    },
+    {
+      "path": "skins/young_caucasian_female/young_caucasian_female.thumb",
+      "bytes": 78304,
+      "sha256": "4bacaa13c1f58321221822e6f9ce1b222eb0e328e5015d9518c8a7184fb34b34"
+    },
+    {
+      "path": "skins/young_caucasian_female/young_lightskinned_female_diffuse.png",
+      "bytes": 4391156,
+      "sha256": "b2a6ac8cd4f9febdb447368e29c76cd68410bb66e46d9dcfa2d5f75126eea8fc"
+    },
+    {
+      "path": "clothes/shoes01/shoes01.mhclo",
+      "bytes": 119049,
+      "sha256": "7994e38f7cdcee0bd5f55101660badcce0162fcdfc7f432218dd1eb301626252"
+    },
+    {
+      "path": "clothes/shoes01/shoes01_diffuse.png",
+      "bytes": 1335772,
+      "sha256": "50c9a406a7f1cb6aa7b42912348e78f09d0252aa3963c8229cf18dfe8353cdbf"
+    },
+    {
+      "path": "clothes/shoes01/shoes01.thumb",
+      "bytes": 40319,
+      "sha256": "a118291fe3e83e3c616febf52fdb480186c816e7cd4d77d331adffd457421cbb"
+    },
+    {
+      "path": "clothes/shoes01/shoes01_normal.png",
+      "bytes": 875473,
+      "sha256": "a9bfd7223e98b8f93100e89596135e3a94e6044f9db11b4d23cec625c37a4599"
+    },
+    {
+      "path": "clothes/shoes01/shoes01.mhw",
+      "bytes": 324727,
+      "sha256": "b377d91e6d0264521f672c3990c366b2631103accba4921fc3965c2ed5ce395b"
+    },
+    {
+      "path": "clothes/shoes01/shoes01.mhmat",
+      "bytes": 1161,
+      "sha256": "db1711e2dfea4dd8c24459643603a190d9a9da603fd26da5542002a73d740be8"
+    },
+    {
+      "path": "clothes/shoes01/shoes01.obj",
+      "bytes": 136910,
+      "sha256": "eac355a842a8eb8ae2f09fac8dd18a877a24ef2521ed2d6bf38559b42ce4b49a"
+    },
+    {
+      "path": "clothes/female_casualsuit01/female_casualsuit01.mhmat",
+      "bytes": 1404,
+      "sha256": "7bef35aade88daf9f4597f3b3c9a45be51cc51caf44012d12ac4e005c8087689"
+    },
+    {
+      "path": "clothes/female_casualsuit01/female_casualsuit01_ao.png",
+      "bytes": 2153148,
+      "sha256": "f97a31fb02b5f36802a08bfe22bffb1961240d4ecb20059540eec6516d753424"
+    },
+    {
+      "path": "clothes/female_casualsuit01/female_casualsuit01_diffuse.png",
+      "bytes": 3019656,
+      "sha256": "414d46afa55fba09ad0913484d57df2ba6b597dc8193595a13a12436137dc21b"
+    },
+    {
+      "path": "clothes/female_casualsuit01/female_casualsuit01.thumb",
+      "bytes": 31184,
+      "sha256": "138a4bfb756f0cdfc8116d3f0ebcc14e1e20472bb225ead986b0cc3a8b291212"
+    },
+    {
+      "path": "clothes/female_casualsuit01/female_casualsuit01.mhclo",
+      "bytes": 150568,
+      "sha256": "8a17e4edceeb22ef30ce102ed05fb3463ca0eeb61addc7811f4867fde5963fa4"
+    },
+    {
+      "path": "clothes/female_casualsuit01/female_casualsuit01.obj",
+      "bytes": 175427,
+      "sha256": "b6cfaf08b291fe10ea312d37e98d5e328eced5828bdb6f96ecac6bf4ababe652"
+    },
+    {
+      "path": "clothes/female_casualsuit01/female_casualsuit01_normal.png",
+      "bytes": 5744103,
+      "sha256": "7bff7afbbc3f068e06f69abcddc8c2c9ce667ec181e0f2a918f8af78eba12610"
+    },
+    {
+      "path": "hair/bob01/bob01.thumb",
+      "bytes": 53628,
+      "sha256": "f354364f4fbd0d83982ba77d1e8e63e15a3f73a04bd43538d076237602965336"
+    },
+    {
+      "path": "hair/bob01/bob01.mhclo",
+      "bytes": 352019,
+      "sha256": "a295b11ab6c7808afa1e01d0c79fb595bbbd7885f65252766486c9fcf6d158c5"
+    },
+    {
+      "path": "hair/bob01/bob01.mhmat",
+      "bytes": 1312,
+      "sha256": "9c3015044a832fb9a72a5d2f28218914ebfbdf6725cfd237cc53a3d95f054e3b"
+    },
+    {
+      "path": "hair/bob01/bob01_diffuse.png",
+      "bytes": 4243598,
+      "sha256": "2b38bc7a028e06e8e633accb7fe2dd1b2bacbb9d32463df73f39f82e63ef9009"
+    },
+    {
+      "path": "hair/bob01/bob01.obj",
+      "bytes": 396190,
+      "sha256": "d7fb73806f47ee37ba3c37bcfadff40a91ba99635d08c3e02d94b4acbf97c231"
+    },
+    {
+      "path": "eyes/materials/brown.thumb",
+      "bytes": 29627,
+      "sha256": "5bd2de12f0c04d423ab00fa13f691a1879b944e63947e228117ddcce31f9cff9"
+    },
+    {
+      "path": "eyes/materials/brown.mhmat",
+      "bytes": 1247,
+      "sha256": "4abad93ce50541c08127721e77bce035640c9f16bed16cd0f5524b1cd5908465"
+    },
+    {
+      "path": "eyes/materials/brown_eye.png",
+      "bytes": 610817,
+      "sha256": "4659691c7295ad6206c78b003e5fd0e5f91dcd53032fa914a229bb48cabe424b"
+    },
+    {
+      "path": "eyes/low-poly/low-poly.thumb",
+      "bytes": 15938,
+      "sha256": "27b09c5a2bd792671c99a00016ec836855278f199bc4753c3018f1ac73068c72"
+    },
+    {
+      "path": "eyes/low-poly/low-poly.mhclo",
+      "bytes": 1344,
+      "sha256": "68582e28e9176cba7cfcf35208f671b6201b8d1bc95c32decff61a3160ec34d8"
+    },
+    {
+      "path": "eyes/low-poly/low-poly.obj",
+      "bytes": 6604,
+      "sha256": "783fe1e6331162c876520b4c2bed7a8ca06354ca15497e8ebd68bb1b59f4d3de"
+    }
+  ],
+  "source": "https://files2.makehumancommunity.org/asset_packs/makehuman_system_assets/makehuman_system_assets_cc0.zip"
+}

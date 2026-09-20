@@ -1,0 +1,29 @@
+.runtimes/
+.runtime/
+vendor/local/
+.build/
+node_modules/
+.env
+.env.*
+!.env.example
+apps/paradize-unity/Library/
+apps/paradize-unity/Temp/
+apps/paradize-unity/Logs/
+apps/paradize-unity/Obj/
+apps/paradize-unity/UserSettings/
+apps/paradize-unity/libcache/
+apps/paradize-unity/Builds/
+apps/paradize-unity/Assets/Paradize/Generated/
+*.csproj
+*.sln
+*.slnx
+
+# Retain local reference snapshots without publishing gitlinks or large archives.
+/vendor/upstream/
+/vendor/assets/
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
+
+# graft's local repository settings — not committed.
+/.graft/

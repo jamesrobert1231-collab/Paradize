@@ -1,0 +1,343 @@
+{
+  "note": "Public upstream provenance only. Snapshots and private source/data inventories are not bundled. Download and review the pinned upstream revision before use.",
+  "sources": [
+    {
+      "name": "mandelbrotnn",
+      "repository": "https://github.com/MaxRobinsonTheGreat/mandelbrotnn.git",
+      "owner": "MaxRobinsonTheGreat",
+      "path": "vendor/upstream/MaxRobinsonTheGreat/mandelbrotnn",
+      "commit": "b03a9fc50d272d79ab0cf761af2d2ca5b53fb99a",
+      "license": "not specified in inspected snapshot",
+      "integration": "docs/integrations/mandelbrotnn.md",
+      "status": "research-reference; information adopted; no runtime integration",
+      "downloaded": false,
+      "activated": false,
+      "securityQualified": false,
+      "snapshotVerification": {
+        "verifiedOn": "2026-09-10",
+        "actualCommit": "b03a9fc50d272d79ab0cf761af2d2ca5b53fb99a",
+        "gitTree": "ed9435a3511ed716e007bd4516a3c962cf546294",
+        "trackedPaths": 42,
+        "workingTreeClean": true,
+        "indexLockPresent": false
+      },
+      "licenseVerification": {
+        "spdx": "NOASSERTION",
+        "licenseFile": null,
+        "sha256": null,
+        "notes": [
+          "No root reuse license found. Retain as research reference; exclude code and assets from product packaging pending license qualification."
+        ]
+      },
+      "versionDrift": false,
+      "qualification": "source inventory verified; runtime not qualified",
+      "snapshotIncluded": false
+    },
+    {
+      "name": "gods-eye-view",
+      "repository": "https://github.com/bilawalsidhu/gods-eye-view.git",
+      "owner": "bilawalsidhu",
+      "path": "vendor/upstream/bilawalsidhu/gods-eye-view",
+      "commit": "759652207fd1279ece97f0f19af566feb9a82146",
+      "license": "MIT (source only; third-party data and assets separately licensed)",
+      "integration": "docs/integrations/gods-eye-view.md",
+      "runtime": {
+        "node": "24.14.0",
+        "platform": "win-x64",
+        "archiveUrl": "https://nodejs.org/dist/v24.14.0/node-v24.14.0-win-x64.zip",
+        "archiveSha256": "313fa40c0d7b18575821de8cb17483031fe07d95de5994f6f435f3b345f85c66",
+        "nodeExeSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+      },
+      "status": "pinned-reference; integration proposed; runtime untested",
+      "downloaded": false,
+      "activated": false,
+      "securityQualified": false,
+      "snapshotVerification": {
+        "verifiedOn": "2026-09-10",
+        "actualCommit": "759652207fd1279ece97f0f19af566feb9a82146",
+        "gitTree": "2dc2fd90ba0e54ff925215be91dfe671ccff70ad",
+        "trackedPaths": 465,
+        "workingTreeClean": true,
+        "indexLockPresent": false
+      },
+      "licenseVerification": {
+        "spdx": "MIT",
+        "licenseFile": "vendor/upstream/bilawalsidhu/gods-eye-view/LICENSE",
+        "sha256": "ffebc8bb68c9a25c164d4182837b32f25ab4d05db866c149a7358f0521523171",
+        "notes": [
+          "MIT applies to code; map feeds, model assets and bundled datasets have separate terms.",
+          "Restricted cable dataset excluded by the separate globe packaging policy; do not ship raw vendor assets automatically."
+        ]
+      },
+      "versionDrift": false,
+      "snapshotIncluded": false
+    },
+    {
+      "name": "fullstack-agent",
+      "repository": "https://github.com/jaredrhod/fullstack-agent.git",
+      "owner": "jaredrhod",
+      "path": "vendor/upstream/jaredrhod/fullstack-agent",
+      "commit": "5bb159f47dbd6fa8f108651d0532a43aef16346b",
+      "license": "AGPL-3.0-or-later",
+      "integration": "docs/integrations/fullstack-agent-sunny.md",
+      "status": "pinned-reference",
+      "downloaded": false,
+      "activated": false,
+      "securityQualified": false,
+      "snapshotVerification": {
+        "verifiedOn": "2026-09-10",
+        "actualCommit": "5bb159f47dbd6fa8f108651d0532a43aef16346b",
+        "gitTree": "9cb477a896f5d381595da511048a20de28b7555b",
+        "trackedPaths": 12,
+        "workingTreeClean": true,
+        "indexLockPresent": false
+      },
+      "licenseVerification": {
+        "spdx": "AGPL-3.0-or-later",
+        "licenseFile": "vendor/upstream/jaredrhod/fullstack-agent/LICENSE",
+        "sha256": "e0eedba615d5cd1b986afb6c5b3a4b1ae33713e7e9dc74d19daec5e3221f9d2e",
+        "notes": [
+          "README.md:88 explicitly states AGPL-3.0-or-later. Preserve attribution and license when adapting code.",
+          "Referenced external component repositories have not been imported by this snapshot inventory."
+        ]
+      },
+      "versionDrift": false,
+      "qualification": "source inventory verified; runtime not qualified",
+      "snapshotIncluded": false
+    },
+    {
+      "name": "video-use",
+      "repository": "https://github.com/browser-use/video-use.git",
+      "owner": "browser-use",
+      "path": "vendor/upstream/browser-use/video-use",
+      "commit": "9575612f066aa517354790a645fd90f9f95a743b",
+      "license": "MIT",
+      "integration": "docs/integrations/source-consolidation-status.md",
+      "status": "source-only; not installed or integrated",
+      "downloaded": false,
+      "activated": false,
+      "securityQualified": false,
+      "snapshotVerification": {
+        "verifiedOn": "2026-09-10",
+        "actualCommit": "9575612f066aa517354790a645fd90f9f95a743b",
+        "gitTree": "7217dbf3e1046696eb8db8f4008092ef937e2fc9",
+        "trackedPaths": 35,
+        "workingTreeClean": true,
+        "indexLockPresent": false
+      },
+      "licenseVerification": {
+        "spdx": "MIT",
+        "licenseFile": "vendor/upstream/browser-use/video-use/LICENSE",
+        "sha256": "f77bf226b54339f5a8891f9edcfadf231c9cd9017a9aa3d9f566d4d6264b541d",
+        "notes": [
+          "License header inspected; dependency and asset packaging review remains separate."
+        ]
+      },
+      "versionDrift": false,
+      "role": "video-engine",
+      "qualification": "source inventory verified; runtime not qualified",
+      "snapshotIncluded": false
+    },
+    {
+      "name": "AIS-OS",
+      "repository": "https://github.com/nateherkai/AIS-OS.git",
+      "owner": "nateherkai",
+      "path": "vendor/upstream/nateherkai/AIS-OS",
+      "commit": "ce9cb93a1145da5daba84ea37208ec35fd03606e",
+      "license": "MIT",
+      "integration": "docs/integrations/source-consolidation-status.md",
+      "status": "source-only; not installed or integrated",
+      "downloaded": false,
+      "activated": false,
+      "securityQualified": false,
+      "snapshotVerification": {
+        "verifiedOn": "2026-09-10",
+        "actualCommit": "ce9cb93a1145da5daba84ea37208ec35fd03606e",
+        "gitTree": "6c5a2d3ea0d15bd7cf9e528c2d32f095c760dabd",
+        "trackedPaths": 96,
+        "workingTreeClean": true,
+        "indexLockPresent": false
+      },
+      "licenseVerification": {
+        "spdx": "MIT",
+        "licenseFile": "vendor/upstream/nateherkai/AIS-OS/LICENSE",
+        "sha256": "9dad3dcd0394dfaaccf1cb62ac2540b9dbdd554b9f21c54ca6d8a12761039f53",
+        "notes": [
+          "MIT applies to framework content; The Three Ms of AI trademark is reserved."
+        ]
+      },
+      "versionDrift": false,
+      "role": "foundation",
+      "qualification": "source inventory verified; runtime not qualified",
+      "snapshotIncluded": false
+    },
+    {
+      "name": "hyperframes-student-kit",
+      "repository": "https://github.com/nateherkai/hyperframes-student-kit.git",
+      "owner": "nateherkai",
+      "path": "vendor/upstream/nateherkai/hyperframes-student-kit",
+      "commit": "b1afdb1dcbcad39dd27638ea699f132fe44ce6df",
+      "license": "MIT",
+      "integration": "docs/integrations/source-consolidation-status.md",
+      "status": "source-only; not installed or integrated",
+      "downloaded": false,
+      "activated": false,
+      "securityQualified": false,
+      "snapshotVerification": {
+        "verifiedOn": "2026-09-10",
+        "actualCommit": "b1afdb1dcbcad39dd27638ea699f132fe44ce6df",
+        "gitTree": "637c67dcacbf93530f384361d89a38a338038853",
+        "trackedPaths": 1023,
+        "workingTreeClean": true,
+        "indexLockPresent": false,
+        "connectivityCheck": "git fsck --connectivity-only --no-progress passed"
+      },
+      "licenseVerification": {
+        "spdx": "MIT",
+        "licenseFile": "vendor/upstream/nateherkai/hyperframes-student-kit/LICENSE",
+        "sha256": "263623d3ac61f5b09eeceec5af2395bb15e566d0507558f5b6c405f2ba132bd1",
+        "notes": [
+          "AIS logos, brand guide images, brand-token CSS and branded example content are excluded from reuse.",
+          "HyperFrames, GSAP, fonts and included media retain separate terms; preserve THIRD_PARTY_NOTICES.md and licenses/."
+        ]
+      },
+      "versionDrift": false,
+      "role": "video-engine",
+      "qualification": "source inventory verified; runtime not qualified",
+      "snapshotIncluded": false
+    },
+    {
+      "name": "SkillSpector",
+      "repository": "https://github.com/NVIDIA/SkillSpector.git",
+      "owner": "NVIDIA",
+      "path": "vendor/upstream/NVIDIA/SkillSpector",
+      "commit": "69dcdfb74487d361ba4c811d088cfdea2ff3a9dc",
+      "license": "Apache-2.0",
+      "integration": "docs/integrations/source-consolidation-status.md",
+      "status": "source-only; not installed or integrated",
+      "downloaded": false,
+      "activated": false,
+      "securityQualified": false,
+      "snapshotVerification": {
+        "verifiedOn": "2026-09-10",
+        "actualCommit": "69dcdfb74487d361ba4c811d088cfdea2ff3a9dc",
+        "gitTree": "ee58afae278fd2054391326c662e13418d4eca62",
+        "trackedPaths": 335,
+        "workingTreeClean": true,
+        "indexLockPresent": false
+      },
+      "licenseVerification": {
+        "spdx": "Apache-2.0",
+        "licenseFile": "vendor/upstream/NVIDIA/SkillSpector/LICENSE",
+        "sha256": "3f34f449075e0cf4222e2e172c5f6569b202dd2ae75f2e396880ac31853e68d6",
+        "notes": [
+          "Keep THIRD_PARTY_NOTICES.md. The current snapshot differs from the previously reviewed version.",
+          "No scan was run by this inventory; LLM, OSV egress and activation policies remain unqualified."
+        ]
+      },
+      "versionDrift": true,
+      "role": "skill-scanner",
+      "qualification": "source-only; new snapshot requires re-review before scanner activation",
+      "snapshotIncluded": false
+    },
+    {
+      "name": "no-ai-slop",
+      "repository": "https://github.com/petergyang/no-ai-slop.git",
+      "owner": "petergyang",
+      "path": "vendor/upstream/petergyang/no-ai-slop",
+      "commit": "000650b156983f5159695b441477f4e63b25dc85",
+      "license": "MIT",
+      "integration": "docs/integrations/source-consolidation-status.md",
+      "status": "source-only; not installed or integrated",
+      "downloaded": false,
+      "activated": false,
+      "securityQualified": false,
+      "snapshotVerification": {
+        "verifiedOn": "2026-09-10",
+        "actualCommit": "000650b156983f5159695b441477f4e63b25dc85",
+        "gitTree": "782e26a87b532a2859e7ee515deac6afdcb11612",
+        "trackedPaths": 14,
+        "workingTreeClean": true,
+        "indexLockPresent": false
+      },
+      "licenseVerification": {
+        "spdx": "MIT",
+        "licenseFile": "vendor/upstream/petergyang/no-ai-slop/LICENSE",
+        "sha256": "7d39cac07da75acfaa38409007c9753313bf167c4ee94252174b1d5f7134b212",
+        "notes": [
+          "License header inspected; dependency and asset packaging review remains separate."
+        ]
+      },
+      "versionDrift": false,
+      "role": "writing-review",
+      "qualification": "source inventory verified; runtime not qualified",
+      "snapshotIncluded": false
+    },
+    {
+      "name": "phone-harness",
+      "repository": "https://github.com/ShawnPana/phone-harness.git",
+      "owner": "ShawnPana",
+      "path": "vendor/upstream/ShawnPana/phone-harness",
+      "commit": "6e47f24cd1d6110e9c72dc2bfe559d2ec709e56d",
+      "license": "MIT",
+      "integration": "docs/integrations/source-consolidation-status.md",
+      "status": "source-only-disabled",
+      "downloaded": false,
+      "activated": false,
+      "securityQualified": false,
+      "snapshotVerification": {
+        "verifiedOn": "2026-09-10",
+        "actualCommit": "6e47f24cd1d6110e9c72dc2bfe559d2ec709e56d",
+        "gitTree": "c3b46c19e4a5f0373467f05f90fd2cb207ae80ee",
+        "trackedPaths": 24,
+        "workingTreeClean": true,
+        "indexLockPresent": false
+      },
+      "licenseVerification": {
+        "spdx": "MIT",
+        "licenseFile": "vendor/upstream/ShawnPana/phone-harness/LICENSE",
+        "sha256": "3a62df1bd8131b5b3e0a40c2ab6f0fc4de7038c0045c39ac7090ce2717704bb1",
+        "notes": [
+          "Retained source only; phone control explicitly disabled under the accepted product contract."
+        ]
+      },
+      "versionDrift": false,
+      "role": "source-only-disabled",
+      "qualification": "source inventory verified; runtime not qualified",
+      "snapshotIncluded": false
+    },
+    {
+      "name": "crm",
+      "repository": "https://github.com/trycompai/crm.git",
+      "owner": "trycompai",
+      "path": "vendor/upstream/trycompai/crm",
+      "commit": "6d4793dd6d7aeea91aa6a034e00b17d7408a2d08",
+      "license": "MIT",
+      "integration": "docs/integrations/source-consolidation-status.md",
+      "status": "source-only; not installed or integrated",
+      "downloaded": false,
+      "activated": false,
+      "securityQualified": false,
+      "snapshotVerification": {
+        "verifiedOn": "2026-09-10",
+        "actualCommit": "6d4793dd6d7aeea91aa6a034e00b17d7408a2d08",
+        "gitTree": "ad2f028c21b136306ffc172172206bc5d6cf880f",
+        "trackedPaths": 1493,
+        "workingTreeClean": true,
+        "indexLockPresent": false
+      },
+      "licenseVerification": {
+        "spdx": "MIT",
+        "licenseFile": "vendor/upstream/trycompai/crm/LICENSE",
+        "sha256": "07637f32627c9d696769a074bdad12ad7b0c66c433bea3f5682ca07b0917004f",
+        "notes": [
+          "License header inspected; dependency and asset packaging review remains separate."
+        ]
+      },
+      "versionDrift": false,
+      "role": "business-crm",
+      "qualification": "source inventory verified; runtime not qualified",
+      "snapshotIncluded": false
+    }
+  ]
+}
