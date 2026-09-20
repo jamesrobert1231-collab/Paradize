@@ -4,6 +4,8 @@ This update preserves the existing repository history and publishes a reviewed s
 
 ## Fresh checks
 
+Latest follow-up: the updated source passed **100 Node tests**, including eight credential-revocation cases. The running service rejects rotated credentials, cancels inference/uploads, and exits so a trusted relaunch can bind the port. A synthetic reproduction against the earlier source confirmed that it previously accepted the old token after rotation. Final per-device identity remains incomplete; no live credential or running installation was changed. See [credential revocation](integrations/credential-revocation.md).
+
 - 92 synthetic Node tests passed from the publication checkout with Node 24.5.0, including Sunny authorization/STOP/knowledge boundaries, Tech Help consent preservation, CRM reconciliation, artifact lifecycle and recovery validation.
 - 12 source-copy tests passed under .NET Framework and the same 12 passed under Unity Mono. Runtime C# compilation against Unity's .NET Standard 2.1 references passed. The test runner now uses a unique temporary output directory so a deeply nested checkout does not overflow legacy Windows path limits.
 - The public FBX was reserialized through Blender's installed FBX reader/writer to remove 28 absolute build/texture path properties. All 8,889 decoded properties were compared: only the approved path strings changed; geometry, material data, bone weights and animation remained identical. Original local model bytes were preserved. The model's `.meta` and material/texture references are included.

@@ -1,5 +1,7 @@
 # Graft setup
 
+Latest source includes native credential revocation. Rebuild the local cache after updating. The private working graph now has 54 source cards; this public export omits one owner-data verification script. The setup-time counts below are historical.
+
 Verified on 2026-09-19 (2026-09-20 UTC): Graft **0.18.0** is installed globally and wired into **Codex through AGENTS.md**. No Claude configuration was created.
 
 The requested `npm install -g @nanonets/graft` failed because the Kotlin native grammar requires the unavailable Windows SDK 10.0.19041.0. `npm install -g @nanonets/graft --ignore-scripts` succeeded. The CLI eagerly imports that unavailable grammar even when no Kotlin is being indexed, so `scripts/tooling/Repair-GraftWindows.ps1` applies a version-checked, narrowly scoped lazy-loading repair. It preserves the original extractor beside the installed file. Kotlin still fails explicitly when requested; its parser is not qualified. Reinstalling Graft can overwrite the repair.

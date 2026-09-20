@@ -1,10 +1,9 @@
 import http from 'node:http';
-import fs from 'node:fs';
 import path from 'node:path';
 import { controlState } from './control-state.mjs';
 import { searchKnowledge, readKnowledgeOriginal } from './knowledge.mjs';
 import { WRITING_GUIDANCE } from './writing-guidance.mjs';
-import { timingSafeEqual } from 'node:crypto';
+import { credentialGuard } from './credentials.mjs';
 import { pathToFileURL } from 'node:url';
 
 const OLLAMA = 'http://127.0.0.1:11434';
@@ -16,7 +15,7 @@ You are currently a local conversation assistant only. You have no tools, browsi
 ${WRITING_GUIDANCE}`;
 
 function fail(code, status = 400) { return Object.assign(new Error(code), { code, status }); }
-function reply(res, status, payload) {
+function sendReply(res, status, payload) {
   if (res.destroyed || res.writableEnded) return;
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
   res.end(JSON.stringify({ ...payload, provider: 'ollama', paidRequestsEnabled: false }));
@@ -64,10 +63,25 @@ async function boundedJson(response, maxBytes) {
   try { return JSON.parse(Buffer.concat(parts).toString('utf8')); } catch { throw fail('invalid-model-response', 503); }
 }
 
-export function createSunnyServer({ token, fetcher = fetch, inferenceTimeoutMs = 90000, controlFile, knowledgeDirectory } = {}) {
-  if (!/^[a-f0-9]{64}$/.test(token || '')) throw new Error('A fresh 256-bit owner token is required.');
-  const expected = Buffer.from(token, 'hex');
+export function createSunnyServer({ token, tokenFile, fetcher = fetch, inferenceTimeoutMs = 90000, controlFile, knowledgeDirectory } = {}) {
+  const credentials = credentialGuard({ token, tokenFile });
   let active = null;
+  let revocationNotified = false;
+  const credentialCurrent = () => {
+    const current = credentials.current();
+    if (!current) {
+      active?.abort(fail('credential-revoked', 401));
+      if (!revocationNotified) { revocationNotified = true; server.emit('credentials-revoked'); }
+    }
+    return current;
+  };
+  const reply = (res, status, payload) => {
+    if (status < 400 && !credentialCurrent()) {
+      sendReply(res, 401, { status: 'denied', code: 'credential-revoked', message: 'Owner access changed. Relaunch PARADIZE through the trusted launcher.' });
+      return;
+    }
+    sendReply(res, status, payload);
+  };
   const control = controlState(controlFile);
   async function localModel(signal) {
     const response = await fetcher(`${OLLAMA}/api/tags`, { signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(5000)]) : AbortSignal.timeout(5000), redirect: 'error' });
@@ -82,7 +96,7 @@ export function createSunnyServer({ token, fetcher = fetch, inferenceTimeoutMs =
       req.resume(); reply(res, 403, { status: 'denied', code: 'native-loopback-only', message: 'Open PARADIZE through its trusted local launcher.' }); return;
     }
     const supplied = /^Bearer ([a-f0-9]{64})$/.exec(String(req.headers.authorization || ''));
-    if (!supplied || !timingSafeEqual(expected, Buffer.from(supplied[1], 'hex'))) {
+    if (!credentialCurrent() || !supplied || !credentials.accepts(supplied[1])) {
       req.resume(); reply(res, 401, { status: 'denied', code: 'owner-token-required', message: 'Owner access is required. Relaunch PARADIZE.' }); return;
     }
     if (req.method === 'GET' && req.url.startsWith('/knowledge/original/')) {
@@ -191,20 +205,20 @@ export function createSunnyServer({ token, fetcher = fetch, inferenceTimeoutMs =
   server.requestTimeout = 10000;
   server.headersTimeout = 5000;
   server.keepAliveTimeout = 2000;
-  server.on('close', () => active?.abort(fail('cancelled', 503)));
+  const credentialPoll = tokenFile ? setInterval(credentialCurrent, 250) : null;
+  credentialPoll?.unref();
+  server.on('close', () => { clearInterval(credentialPoll); active?.abort(fail('cancelled', 503)); });
   return server;
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const file = process.env.PARADIZE_SUNNY_TOKEN_FILE;
   if (!file) throw new Error('Run the PARADIZE launcher to provision owner access first.');
-  const stat = fs.lstatSync(file);
-  if (!stat.isFile() || stat.isSymbolicLink() || stat.size > 128) throw new Error('Invalid owner token file.');
-  const token = fs.readFileSync(file, 'utf8').trim();
   const port = Number(process.env.PARADIZE_SUNNY_PORT || 4318);
   if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error('Invalid local port.');
-  const server = createSunnyServer({ token, controlFile: path.join(path.dirname(file), 'control.json'), knowledgeDirectory: path.join(path.dirname(file), 'knowledge') });
+  const server = createSunnyServer({ tokenFile: file, controlFile: path.join(path.dirname(file), 'control.json'), knowledgeDirectory: path.join(path.dirname(file), 'knowledge') });
   server.listen(port, '127.0.0.1', () => process.stdout.write(`Sunny local bridge ready on 127.0.0.1:${port}; local inference only.\n`));
   const shutdown = () => { server.close(); server.closeAllConnections(); };
+  server.once('credentials-revoked', shutdown);
   process.once('SIGINT', shutdown); process.once('SIGTERM', shutdown);
 }
