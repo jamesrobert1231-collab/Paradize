@@ -18,7 +18,7 @@ function fail(code, status = 400) { return Object.assign(new Error(code), { code
 function sendReply(res, status, payload) {
   if (res.destroyed || res.writableEnded) return;
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
-  res.end(JSON.stringify({ ...payload, provider: 'ollama', paidRequestsEnabled: false }));
+  res.end(JSON.stringify({ ...payload, service: 'paradize-sunny-local', protocolVersion: 2, localOnlyPolicyRequired: true, provider: 'ollama', paidRequestsEnabled: false }));
 }
 async function readJson(req, signal) {
   if (!/^application\/json(?:;|$)/i.test(String(req.headers['content-type'] || ''))) throw fail('json-required', 415);
@@ -84,7 +84,17 @@ export function createSunnyServer({ token, tokenFile, fetcher = fetch, inference
   };
   const control = controlState(controlFile);
   async function localModel(signal) {
-    const response = await fetcher(`${OLLAMA}/api/tags`, { signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(5000)]) : AbortSignal.timeout(5000), redirect: 'error' });
+    const options = { signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(5000)]) : AbortSignal.timeout(5000), redirect: 'error' };
+    // Ollama can proxy cloud models even on localhost. Require an explicit
+    // daemon policy on every call, before any conversation data is transmitted.
+    try {
+      const status = await boundedJson(await fetcher(`${OLLAMA}/api/status`, options), 4096);
+      if (status?.cloud?.disabled !== true) throw fail('local-only-unconfirmed', 503);
+    } catch {
+      if (signal?.aborted) signal.throwIfAborted();
+      throw fail('local-only-unconfirmed', 503);
+    }
+    const response = await fetcher(`${OLLAMA}/api/tags`, options);
     const data = await boundedJson(response, 256 * 1024);
     const models = Array.isArray(data.models) ? data.models : [];
     return LOCAL_MODELS.find(name => models.some(model => model.name === name && Number(model.size) > 0 && !model.remote_host && !model.remote_model && !model.details?.remote_host && !model.details?.remote_model)) || null;
@@ -137,7 +147,7 @@ export function createSunnyServer({ token, tokenFile, fetcher = fetch, inference
       try {
         const model = await localModel();
         reply(res, 200, { status: model ? 'ready' : 'model-unavailable', model, activeRequest: !!active, capabilities: ['local-chat'], qualification: 'conversation quality not benchmarked', memoryConnected: false, toolsEnabled: false });
-      } catch { reply(res, 200, { status: 'ollama-unavailable', model: null, message: 'Sunny local inference is unavailable. The island remains usable.', capabilities: [], memoryConnected: false, toolsEnabled: false }); }
+      } catch (error) { reply(res, 200, { status: error.code === 'local-only-unconfirmed' ? error.code : 'ollama-unavailable', model: null, message: error.code === 'local-only-unconfirmed' ? 'Local-only inference is not confirmed. Sunny requires an Ollama service with cloud access disabled.' : 'Sunny local inference is unavailable. The island remains usable.', capabilities: [], memoryConnected: false, toolsEnabled: false }); }
       return;
     }
     if (req.method === 'POST' && ['/control/stop', '/control/resume'].includes(req.url)) {
@@ -191,6 +201,10 @@ export function createSunnyServer({ token, tokenFile, fetcher = fetch, inference
       reply(res, 200, { status: 'complete', message: result.message.content.trim(), model, memoryConnected: grounded, sources, retrievalStatus: grounded ? (sources.length ? 'excerpts-found' : 'no-matches') : 'not-requested', toolsEnabled: false });
     } catch (error) {
       const code = controller.signal.aborted ? controller.signal.reason?.code || 'cancelled' : error.code || 'ollama-unavailable';
+      if (code === 'local-only-unconfirmed') {
+        reply(res, 503, { status: 'unavailable', code, message: 'Local-only inference is not confirmed. Sunny requires an Ollama service with cloud access disabled. No conversation was sent to inference.' });
+        return;
+      }
       if (code === 'knowledge-unavailable') {
         reply(res, 503, { status: 'unavailable', code, message: 'Imported knowledge is unavailable or failed its integrity check. No answer was generated from these records.' });
         return;

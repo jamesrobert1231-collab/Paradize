@@ -42,9 +42,9 @@ namespace Paradize
         public bool IsChatReady => chatReady;
         public bool IsReplyPending => busy;
         public bool LastReplySucceeded { get; private set; }
-        [Serializable] sealed class BridgeReply { public string status; public string message; public string model; public string retrievalStatus; public KnowledgeRecord[] sources; }
+        [Serializable] sealed class BridgeReply { public string service; public int protocolVersion; public bool localOnlyPolicyRequired; public string provider; public bool paidRequestsEnabled; public string status; public string message; public string model; public string retrievalStatus; public KnowledgeRecord[] sources; }
         [Serializable] sealed class KnowledgeRecord { public string id; public string citation; public string title; public string snippet; public string source; public string originalSha256; public string uncertainty; }
-        [Serializable] sealed class KnowledgeReply { public string status; public string message; public KnowledgeRecord[] results; }
+        [Serializable] sealed class KnowledgeReply { public string service; public int protocolVersion; public bool localOnlyPolicyRequired; public string provider; public bool paidRequestsEnabled; public string status; public string message; public KnowledgeRecord[] results; }
         sealed class SourceDownloadHandler : DownloadHandlerScript
         {
             readonly MemoryStream bytes=new MemoryStream();
@@ -378,7 +378,7 @@ namespace Paradize
                 {SunnyMessage="Knowledge search is unavailable. No original records were changed.";yield break;}
                 KnowledgeReply result=null;
                 try{result=JsonUtility.FromJson<KnowledgeReply>(r.downloadHandler.text);}catch(Exception){}
-                if(result==null || result.status!="complete"){SunnyMessage="Knowledge response could not be validated.";yield break;}
+                if(result==null || result.status!="complete" || !SunnyBridgeContract.Accepts(result.service,result.protocolVersion,result.localOnlyPolicyRequired,result.provider,result.paidRequestsEnabled)){SunnyMessage="Knowledge response could not be validated. Relaunch through the current PARADIZE launcher.";yield break;}
                 displayedSources=result.results??new KnowledgeRecord[0];
                 var output=new StringBuilder(result.message+"\n");
                 foreach(var record in result.results??new KnowledgeRecord[0])
@@ -404,7 +404,7 @@ namespace Paradize
             if(string.IsNullOrEmpty(json) || json.Length>131072) return false;
             try { reply=JsonUtility.FromJson<BridgeReply>(json); }
             catch (Exception) { return false; }
-            return reply!=null && !string.IsNullOrEmpty(reply.status);
+            return reply!=null && !string.IsNullOrEmpty(reply.status) && SunnyBridgeContract.Accepts(reply.service,reply.protocolVersion,reply.localOnlyPolicyRequired,reply.provider,reply.paidRequestsEnabled);
         }
         IEnumerator CheckSunny()
         {
