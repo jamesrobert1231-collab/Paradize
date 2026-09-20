@@ -1,0 +1,18 @@
+[
+  {
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/coast_sand_01/coast_sand_01_diff_1k.jpg",
+    "sha256": "58af2e40100f7f405703a86d593af64379f822c4786850def23ecfc921450d54",
+    "assetPage": "https://polyhaven.com/a/coast_sand_01",
+    "bytes": 960614,
+    "file": "coast_sand_01_albedo.jpg",
+    "license": "CC0-1.0"
+  },
+  {
+    "source": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/coast_sand_01/coast_sand_01_nor_gl_1k.jpg",
+    "sha256": "fe4d045aec99e71e80f682fcf0ad958d2dff1fe614b73178b304d1bac047b54a",
+    "assetPage": "https://polyhaven.com/a/coast_sand_01",
+    "bytes": 1146826,
+    "file": "coast_sand_01_normal.jpg",
+    "license": "CC0-1.0"
+  }
+]
