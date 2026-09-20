@@ -92,7 +92,8 @@ test('failed control persistence closes admission and does not acknowledge durab
   assert.equal((await fetch(url + '/chat', { method: 'POST', headers, body: '{}' })).status, 423);
 });
 async function fixture(t, fetcher, options = {}) {
-  const server = createSunnyServer({ token, fetcher, inferenceTimeoutMs: 1000, ...options });
+  const localFetcher = (url, options) => url.endsWith('/api/status') ? Promise.resolve(Response.json({ cloud: { disabled: true } })) : fetcher(url, options);
+  const server = createSunnyServer({ token, fetcher: localFetcher, inferenceTimeoutMs: 1000, ...options });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   t.after(() => new Promise(resolve => { server.closeAllConnections(); server.close(resolve); }));
   return `http://127.0.0.1:${server.address().port}`;

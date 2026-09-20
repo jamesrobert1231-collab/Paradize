@@ -14,7 +14,7 @@ const source = importDocument(store, { source: path.join(directory, 'synthetic-n
 const token = randomBytes(32).toString('hex');
 const calls = [];
 const server = createSunnyServer({ token, knowledgeDirectory: store, fetcher: (url, options) => {
-  if (!['http://127.0.0.1:11434/api/tags', 'http://127.0.0.1:11434/api/chat'].includes(url)) throw new Error('Unexpected provider destination');
+  if (!['http://127.0.0.1:11434/api/status', 'http://127.0.0.1:11434/api/tags', 'http://127.0.0.1:11434/api/chat'].includes(url)) throw new Error('Unexpected provider destination');
   calls.push(url);
   return fetch(url, options);
 } });

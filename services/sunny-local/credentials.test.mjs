@@ -20,7 +20,8 @@ function directory(t) {
   return { root, file };
 }
 async function fixture(t, file, fetcher = async () => models()) {
-  const server = createSunnyServer({ tokenFile: file, fetcher });
+  const localFetcher = (url, options) => url.endsWith('/api/status') ? Promise.resolve(Response.json({ cloud: { disabled: true } })) : fetcher(url, options);
+  const server = createSunnyServer({ tokenFile: file, fetcher: localFetcher });
   server.listen(0, '127.0.0.1'); await once(server, 'listening');
   t.after(() => new Promise(resolve => { server.close(resolve); server.closeAllConnections(); }));
   return { server, url: `http://127.0.0.1:${server.address().port}` };
