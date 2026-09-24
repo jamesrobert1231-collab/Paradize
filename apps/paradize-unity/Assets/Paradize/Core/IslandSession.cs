@@ -29,6 +29,10 @@ namespace Paradize
         bool panel = true;
         string token, ownerTokenFile, connection="Local controls";
         string sourceCopyStatus="";
+        string knowledgeStatus="Imported knowledge has not been checked this session.";
+        bool checkingKnowledge;
+        int knowledgeStatusGeneration;
+        UnityWebRequest pendingKnowledgeStatus;
         bool savingSource;
         KnowledgeRecord[] displayedSources=new KnowledgeRecord[0];
         bool busy, chatReady, cancelling;
@@ -45,6 +49,7 @@ namespace Paradize
         [Serializable] sealed class BridgeReply { public string service; public int protocolVersion; public bool localOnlyPolicyRequired; public string provider; public bool paidRequestsEnabled; public string status; public string message; public string model; public string retrievalStatus; public KnowledgeRecord[] sources; }
         [Serializable] sealed class KnowledgeRecord { public string id; public string citation; public string title; public string snippet; public string source; public string originalSha256; public string uncertainty; }
         [Serializable] sealed class KnowledgeReply { public string service; public int protocolVersion; public bool localOnlyPolicyRequired; public string provider; public bool paidRequestsEnabled; public string status; public string message; public KnowledgeRecord[] results; }
+        [Serializable] sealed class KnowledgeStatusReply { public string service; public int protocolVersion; public bool localOnlyPolicyRequired; public string provider; public bool paidRequestsEnabled; public string status; public string knowledgeState; public int recordCount; public int sourceCount; public string originalVerification; public bool historicalAuthority; }
         sealed class SourceDownloadHandler : DownloadHandlerScript
         {
             readonly MemoryStream bytes=new MemoryStream();
@@ -68,7 +73,7 @@ namespace Paradize
         public static readonly string[] Names = {"Command", "Knowledge", "Finance", "Business", "World", "Studio", "Agents"};
         public static readonly string[] Details = {
             "Owner command plaza • Sunny is always one click away. Local island navigation is active.",
-            "Second Brain / AIS-OS • Knowledge district reserved. Source import and provenance reconciliation pending.",
+            "Second Brain / AIS-OS • Search imported records and save preserved source copies. Import coverage is partial; original stores remain authoritative.",
             "Finance / credit recovery • Private records stay in their original stores until a verified migration. No financial actions enabled.",
             "Eve / CRM / Tech Help • Shared business district. Agent, database and consent adapters pending qualification.",
             "Prelude / HQ / Globe • Globe build passed. Authenticated live-feed service and Unity bridge pending. Existing world still preserved separately.",
@@ -335,6 +340,7 @@ namespace Paradize
             View.transform.position=p+new Vector3(24,17,-38); View.transform.LookAt(p+Vector3.up*7);
             yaw=View.transform.eulerAngles.y; pitch=View.transform.eulerAngles.x; ActiveDistrict=Names[index]; page=index;
             SunnyMessage=Details[index];
+            if(index==1)StartCoroutine(CheckKnowledge());
         }
 
         public void Ask(string command)
@@ -396,6 +402,40 @@ namespace Paradize
             try { return request.SendWebRequest(); }
             catch (Exception) { return null; }
         }
+        IEnumerator CheckKnowledge()
+        {
+            if(checkingKnowledge)yield break;
+            if(string.IsNullOrEmpty(token)){knowledgeStatus="Use the PARADIZE launcher to check imported knowledge.";yield break;}
+            checkingKnowledge=true;
+            int generation=++knowledgeStatusGeneration;
+            knowledgeStatus="Checking imported knowledge…";
+            try
+            {
+                using(var r=Request("/knowledge/status"))
+                {
+                    pendingKnowledgeStatus=r;r.timeout=8;
+                    var operation=BeginRequest(r);
+                    if(operation!=null)yield return operation;
+                    if(generation!=knowledgeStatusGeneration)yield break;
+                    knowledgeStatus="Imported knowledge is unavailable. This does not mean your records are empty.";
+                    if(operation==null || r.result!=UnityWebRequest.Result.Success || string.IsNullOrEmpty(r.downloadHandler.text) || r.downloadHandler.text.Length>4096)yield break;
+                    KnowledgeStatusReply result=new KnowledgeStatusReply{recordCount=-1,sourceCount=-1,historicalAuthority=true};
+                    // Absent fields must not become an apparently valid empty index.
+                    try{JsonUtility.FromJsonOverwrite(r.downloadHandler.text,result);}catch(Exception){result=null;}
+                    if(result==null || !SunnyBridgeContract.Accepts(result.service,result.protocolVersion,result.localOnlyPolicyRequired,result.provider,result.paidRequestsEnabled))yield break;
+                    string summary;
+                    if(SunnyBridgeContract.TryKnowledgeSummary(result.status,result.knowledgeState,result.recordCount,result.sourceCount,result.originalVerification,result.historicalAuthority,out summary))knowledgeStatus=summary;
+                }
+            }
+            finally{if(generation==knowledgeStatusGeneration){checkingKnowledge=false;pendingKnowledgeStatus=null;}}
+        }
+        void CancelKnowledgeStatus()
+        {
+            knowledgeStatusGeneration++;
+            if(pendingKnowledgeStatus!=null)pendingKnowledgeStatus.Abort();
+            pendingKnowledgeStatus=null;checkingKnowledge=false;
+            knowledgeStatus="Imported knowledge has not been checked this session.";
+        }
         static bool TryReply(UnityWebRequest request, out BridgeReply reply)
         {
             reply=null;
@@ -408,6 +448,7 @@ namespace Paradize
         }
         IEnumerator CheckSunny()
         {
+            CancelKnowledgeStatus();
             chatReady=false;
             var file=Environment.GetEnvironmentVariable("PARADIZE_SUNNY_TOKEN_FILE");
             ownerTokenFile=null;
@@ -419,9 +460,9 @@ namespace Paradize
                 if(operation==null){connection="Sunny service unavailable • local controls ready";yield break;}
                 yield return operation;
                 if(!TryReply(r,out var reply)){connection="Sunny service unavailable • local controls ready";yield break;}
-                if(reply.status=="stopped") {Stopped=true;connection="Sunny paused • resume required";yield break;}
-                chatReady=reply.status=="ready";
-                connection=chatReady?"Sunny local AI • "+reply.model:"Sunny model unavailable • local controls ready";
+                connection=SunnyBridgeContract.HealthMessage(reply.status,reply.model);
+                if(reply.status=="stopped") {Stopped=true;yield break;}
+                chatReady=SunnyBridgeContract.ChatReady(reply.status,reply.model);
             }
         }
         public void AskWithKnowledge(string message, string query)
@@ -633,6 +674,13 @@ namespace Paradize
             float messageHeight=Mathf.Clamp(body.CalcHeight(new GUIContent(SunnyMessage),305),56,155);
             messageScroll=GUILayout.BeginScrollView(messageScroll,false,false,GUILayout.Height(messageHeight));
             GUILayout.Label(SunnyMessage,body);GUILayout.EndScrollView();GUILayout.Space(15);
+            if(page==1)
+            {
+                GUILayout.Label(knowledgeStatus,body);
+                GUI.enabled=!checkingKnowledge;
+                if(GUILayout.Button(checkingKnowledge?"Checking records…":"Refresh imported records",button))StartCoroutine(CheckKnowledge());
+                GUI.enabled=true;GUILayout.Space(12);
+            }
             if(displayedSources.Length>0)
             {
                 GUILayout.Label("SOURCES FROM LAST RETRIEVAL",small);
@@ -728,8 +776,10 @@ namespace Paradize
             if(quit)Application.Quit(success?0:1);
         }
 
+        void OnDisable(){CancelKnowledgeStatus();}
         void OnDestroy()
         {
+            CancelKnowledgeStatus();
             requestGeneration++;
             if(pendingChat!=null)pendingChat.Abort();
             pendingChat=null;token=null;ownerTokenFile=null;

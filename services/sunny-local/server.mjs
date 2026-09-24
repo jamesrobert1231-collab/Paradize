@@ -1,7 +1,7 @@
 import http from 'node:http';
 import path from 'node:path';
 import { controlState } from './control-state.mjs';
-import { searchKnowledge, readKnowledgeOriginal } from './knowledge.mjs';
+import { searchKnowledge, readKnowledgeOriginal, knowledgeStatus } from './knowledge.mjs';
 import { WRITING_GUIDANCE } from './writing-guidance.mjs';
 import { credentialGuard } from './credentials.mjs';
 import { pathToFileURL } from 'node:url';
@@ -108,6 +108,16 @@ export function createSunnyServer({ token, tokenFile, fetcher = fetch, inference
     const supplied = /^Bearer ([a-f0-9]{64})$/.exec(String(req.headers.authorization || ''));
     if (!credentialCurrent() || !supplied || !credentials.accepts(supplied[1])) {
       req.resume(); reply(res, 401, { status: 'denied', code: 'owner-token-required', message: 'Owner access is required. Relaunch PARADIZE.' }); return;
+    }
+    if (req.method === 'GET' && req.url === '/knowledge/status') {
+      req.resume();
+      try {
+        if (!knowledgeDirectory) throw new Error('No knowledge store');
+        reply(res, 200, { status: 'complete', ...knowledgeStatus(knowledgeDirectory) });
+      } catch {
+        reply(res, 503, { status: 'unavailable', code: 'knowledge-status-unavailable', message: 'The knowledge index could not be verified. The original records may still exist.' });
+      }
+      return;
     }
     if (req.method === 'GET' && req.url.startsWith('/knowledge/original/')) {
       req.resume();
