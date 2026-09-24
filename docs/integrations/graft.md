@@ -1,6 +1,6 @@
 # Graft setup
 
-Latest source includes native credential revocation. Rebuild the local cache after updating. The private working graph now has 54 source cards; this public export omits one owner-data verification script. The setup-time counts below are historical.
+Latest refresh, September 23, 2026: the public source produced **68 map files plus INDEX.md**, covering the account-review register, Sunny, Unity, import/recovery tools and tests. The graph contains 444 nodes and 947 edges. Rebuild the local cache after updating. The setup-time counts below are historical.
 
 Verified on 2026-09-19 (2026-09-20 UTC): Graft **0.18.0** is installed globally and wired into **Codex through AGENTS.md**. No Claude configuration was created.
 

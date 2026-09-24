@@ -1,24 +1,30 @@
-# Source update status — 2026-09-20
+# Source update status — 2026-09-23
 
-This update preserves the existing repository history and publishes a reviewed source subset of the private consolidation workspace. It does not activate connections, schedules, generated-code execution, deployments, or account access.
+PARADIZE remains a developing private Unity environment with Sunny as its conversational interface. This public repository contains reviewed source and licensed assets. Updating it does not activate account connections, scheduled work, generated-code execution or a new installed player.
 
-## Fresh checks
+## Current source update
 
-Latest follow-up: the updated source passed **100 Node tests**, including eight credential-revocation cases. The running service rejects rotated credentials, cancels inference/uploads, and exits so a trusted relaunch can bind the port. A synthetic reproduction against the earlier source confirmed that it previously accepted the old token after rotation. Final per-device identity remains incomplete; no live credential or running installation was changed. See [credential revocation](integrations/credential-revocation.md).
+- Added the Windows account-review register: encrypted case history, per-source checkpoints, explicit approval evidence, dispatch-attempt records and notification deduplication. The owner-only Sunny bridge exposes its review plan without invoking a model or enabling external actions. See [account review](../services/account-review/README.md).
+- Corrected acknowledgment of notifications for maximum-length source and case identifiers. Valid records can now be marked reported without repeating unchanged notices; invalid identifiers and mismatched fingerprints remain rejected. A failing regression reproduced the original error before the fix.
+- Updated the developer documentation and rebuilt Codex's Graft navigation cache: 68 source map files plus INDEX.md, 444 nodes and 947 edges. Generated graph files remain local and can be rebuilt from source.
 
-- 92 synthetic Node tests passed from the publication checkout with Node 24.5.0, including Sunny authorization/STOP/knowledge boundaries, Tech Help consent preservation, CRM reconciliation, artifact lifecycle and recovery validation.
-- 12 source-copy tests passed under .NET Framework and the same 12 passed under Unity Mono. Runtime C# compilation against Unity's .NET Standard 2.1 references passed. The test runner now uses a unique temporary output directory so a deeply nested checkout does not overflow legacy Windows path limits.
-- The public FBX was reserialized through Blender's installed FBX reader/writer to remove 28 absolute build/texture path properties. All 8,889 decoded properties were compared: only the approved path strings changed; geometry, material data, bone weights and animation remained identical. Original local model bytes were preserved. The model's `.meta` and material/texture references are included.
-- The private working checkout's Graft 0.18.0 build produced 52 map cards plus INDEX.md, with 353 nodes and 680 edges. A public checkout intentionally omits the owner-data-only verification script; its fresh build produced 51 cards plus INDEX.md, 351 nodes and 671 edges.
+Fresh validation in the publication checkout on Windows with Node 24.5.0: **155 tests passed, zero failures or skips**. This includes actual DPAPI-encrypted temporary SQLite storage, reopen/readback, concurrent revision conflicts, corruption handling, the protected Sunny review route, approval and notification boundaries, plus the existing Sunny, import, CRM and recovery suites. The focused model suite passed all 18 tests after the notification fix. The staged diff passed whitespace validation and a review for private paths, credentials and records.
 
-The path-normalized FBX has not completed a fresh Unity import/render journey. A new player containing recent source-copy and grounding work has not been released. Full Unity build admission remains blocked on local capacity; do not reinterpret compile checks as player qualification.
+The register is not a standalone account connector or an autonomous executor. Its Windows-profile encryption is not a portable backup. There is no Unity action-inbox panel or verified mobile delivery yet. Tests use synthetic temporary state and do not modify live accounts, credentials or scheduler settings.
 
-## Continuing requirements
+## Earlier integrated source
 
-The intended product remains one private Unity environment with Sunny always available and all selected systems consolidated behind protected services. Major remaining work includes persistent owner identity, pairing/revocation, real iPhone/browser access, stronger Sunny capability reconciliation, knowledge/finance and CRM data cutovers, combined video workflows, qualified WSL/container execution, production encrypted Drive recovery, installer/upgrade/rollback journeys, performance and realistic visual acceptance.
+- The Knowledge district can request owner-protected index counts independently of model availability. It distinguishes an unavailable store from a valid empty index; original documents are checked when accessed. See [knowledge inventory](integrations/knowledge-inventory.md).
+- Text imports preserve UTF-8 originals and provenance; CRM reconciliation retains historical identifiers and opt-out restrictions. See [import history](integrations/import-history.md).
+- Sunny requires the local inference daemon to confirm cloud access is disabled before conversation data is sent. Credential rotation invalidates the running bridge. See [local-only inference](integrations/local-only-inference.md) and [credential revocation](integrations/credential-revocation.md).
+- The human FBX in this public repository has normalized source paths and retained asset attribution. The private original is preserved. Fresh Unity import/render qualification of the public copy remains required.
 
-The current encrypted recovery format is a bounded synthetic qualification tool, not production database/media/credential recovery. Job records and output checks are not a working sandbox. Upstream source inventory is not runtime integration. Real account connectivity must be configured and qualified separately.
+Earlier source checks passed 51 bridge-contract assertions and 12 source-copy assertions on both .NET Framework and Unity Mono; runtime C# compiled against Unity's .NET Standard 2.1 references. Those are historical source checks, not fresh player or visual acceptance results. This update does not change Unity C# or assets.
 
-The island's moon/tide model is illustrative. Finishing the consolidation release also does not complete every inherited Sunny/world ambition; those remain future roadmap requirements.
+## Remaining release requirements
 
-Overall product completion remains an approximate **39% planning estimate**, not a measured acceptance-test percentage.
+Persistent owner identity and device pairing, real iPhone/browser access, reconciliation of the stronger Sunny capabilities, staged knowledge/finance and CRM cutovers, combined video workflows, qualified WSL/container execution, production encrypted Drive recovery, installer/upgrade/rollback journeys, performance and realistic visual acceptance remain incomplete.
+
+The Windows build helper requires 14 GiB free, including the 10 GiB operating reserve. Job records and output checks alone do not qualify a sandbox. Upstream inventories do not establish runtime integration. Synthetic recovery tests do not qualify recovery of production databases, media or credentials without the original Windows profile. The island's moon/tide model remains illustrative.
+
+Overall product completion remains approximately **39%**, a planning estimate rather than a measured percentage of passed acceptance criteria. Publishing source does not complete the consolidation release or the inherited unfinished Sunny/world requirements.

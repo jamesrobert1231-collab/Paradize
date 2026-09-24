@@ -11,6 +11,7 @@ PARADIZE is a private, local-first systems environment with a Unity island as it
 - A loopback-only, owner-token-protected Sunny service using an installed local Ollama model. Paid providers and fallback calls are disabled.
 - Explicit knowledge search, grounded answers, preserved-source verification and protected source-copy support. Personal documents must be imported separately.
 - Consent-preserving Tech Help staging and CRM reconciliation proposals, bounded artifact/job records, encrypted synthetic recovery and multipart backup verification.
+- A Windows-encrypted account action register with case history, approval checks and an owner-protected review endpoint. Provider actions, scheduling and a Unity action-inbox panel remain separate integrations. See [account review](services/account-review/README.md).
 - Synthetic tests, Windows launch/build helpers, and repository-scoped Codex/Graft instructions.
 
 `sources.lock.json` records upstream revisions and license evidence. Upstream repositories and private source snapshots are **not bundled or automatically executed**. Selected MakeHuman graphical assets and Poly Haven coastal textures retain their CC0 notices and provenance. The no-ai-slop adaptation retains its MIT notice in source.
@@ -19,7 +20,7 @@ PARADIZE is a private, local-first systems environment with a Unity island as it
 
 1. Install Unity **6000.6.0f1** with Windows build support.
 2. Provision the isolated Node runtime with `scripts/globe/setup-runtime.ps1`. It verifies the archive and executable hashes and does not replace global Node.
-3. For local conversation, install Ollama and one of the supported local models (`qwen2.5:3b` or `qwen3.5:4b`). Missing models are reported as unavailable; there is no cloud fallback.
+3. For local conversation, install Ollama and one of the supported local models (`qwen2.5:3b` or `qwen3.5:4b`). The daemon must confirm cloud access is disabled before conversation is admitted; see [local-only inference](docs/integrations/local-only-inference.md). Missing models are reported as unavailable; there is no cloud fallback.
 4. Open `apps/paradize-unity` through **Open PARADIZE in Unity.cmd**. In the editor, choose **PARADIZE > Create island scene** before Play mode. Generated scene resources are deliberately excluded from Git; this command regenerates the baseline, so preserve custom scene work first.
 5. To build the Windows player, run `scripts/Build-Paradize.ps1`. Its capacity check requires 14 GiB free for the measured working margin plus a 10 GiB operating reserve. After a successful build, **Start PARADIZE.cmd** launches the service and player.
 
@@ -33,7 +34,7 @@ With Node 24 on PATH, run all synthetic Node checks from the repository root:
 
 ```powershell
 $testFiles = Get-ChildItem services,modules,tests -Recurse -Filter '*.test.mjs' -File | ForEach-Object FullName
-node --test @testFiles
+node --test --test-concurrency=2 @testFiles
 ./tests/unity/verify-source-copies.ps1
 ```
 
