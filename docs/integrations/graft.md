@@ -1,6 +1,6 @@
 # Graft setup
 
-Latest refresh, September 23, 2026: the public source produced **70 map files plus INDEX.md**, covering the account-review register, Sunny, Unity, import/recovery tools and tests. The graph contains 466 nodes and 1015 edges. Rebuild the local cache after updating. The setup-time counts below are historical.
+Latest refresh, September 24, 2026: the public source produced **85 map files plus INDEX.md**, including owner identity, the browser gateway, the account-review register, Sunny, Unity, import/recovery tools and tests. The graph contains 672 nodes and 1542 edges. Rebuild the local cache after updating. SQL migrations, PowerShell and HTML/CSS require direct inspection. The setup-time counts below are historical.
 
 Verified on 2026-09-19 (2026-09-20 UTC): Graft **0.18.0** is installed globally and wired into **Codex through AGENTS.md**. No Claude configuration was created.
 

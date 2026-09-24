@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
+  <title>Connect this device · PARADIZE</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <script src="/assets/client.js" defer></script>
+</head>
+<body data-page="pair">
+  <main class="pair-layout">
+    <a class="brand" href="/" aria-label="PARADIZE home">PARADIZE<span>Private workspace</span></a>
+    <section class="pair-card" aria-labelledby="pair-title">
+      <p class="eyebrow">A connection you control</p>
+      <h1 id="pair-title">Connect this device</h1>
+      <p>Use a connection link created on your own PC. Only connect a browser you trust.</p>
+      <p id="pair-status" class="notice" role="status" aria-live="polite">Checking your connection link…</p>
+      <dl id="pair-details" class="pair-details" hidden>
+        <dt>Access lasts</dt><dd id="pair-duration"></dd>
+        <dt>Use this link before</dt><dd id="pair-expiry"></dd>
+      </dl>
+      <form id="pair-form">
+        <label for="device-label">A name for this browser</label>
+        <input id="device-label" name="label" type="text" maxlength="60" value="Personal browser" autocomplete="off" aria-describedby="pair-help" required disabled>
+        <p id="pair-help" class="input-help">For example, “My iPhone.” Connecting does not grant mailbox, payment, or device-control permissions.</p>
+        <button id="connect" class="primary-button" type="submit" disabled>Connect this device</button>
+      </form>
+      <p class="scope-note">The link can be used once. Refreshing this page clears it; return to your PC for a new connection link if needed.</p>
+    </section>
+  </main>
+  <noscript><p class="noscript">JavaScript is needed to use this connection link. No access has been granted by opening this page.</p></noscript>
+</body>
+</html>

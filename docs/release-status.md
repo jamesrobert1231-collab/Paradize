@@ -1,19 +1,21 @@
-# Source update status — 2026-09-23
+# Source update status — 2026-09-24
 
 PARADIZE remains a developing private Unity environment with Sunny as its conversational interface. This public repository contains reviewed source and licensed assets. Updating it does not activate account connections, scheduled work, generated-code execution or a new installed player.
 
 ## Current source update
 
-- Added a streamed multipart backup verifier that checks every cloud part and the ordered complete-file hash without creating another local installer. It reuses the existing restore manifest validation and records `restored:false`. See [streaming recovery](integrations/streaming-recovery.md).
-- Added bounded input and download handling, sanitized failure messages, and explicit Windows terminal framing and cleanup. Short terminal receipts correct wrapping that interrupted the initial live trial.
-- Rebuilt Codex's Graft navigation cache: 70 source map files plus INDEX.md, 466 nodes and 1015 edges. Generated graph files remain local and can be rebuilt from source.
+- Added staged persistent-owner authority, typed device sessions, atomic pairing, revocation history and a PostgreSQL 17 storage adapter/migration. Trusted-local administration stays separate from remote capabilities. See [identity foundation](integrations/identity-foundation.md).
+- Added a direct-HTTPS browser gateway and accessible pairing/Sunny pages. Protected cookies, exact-origin checks and a session-bound request nonce guard browser mutations. Access is rechecked before inference and protected output; cancellation affects only the requesting device. No native/global STOP or account permissions are exposed.
+- Added a bounded local Sunny adapter with protocol validation and no paid fallback. Real HTTPS-to-native-Sunny tests use synthetic identity storage and model output. Independent review reproduced and closed a revocation-during-upload admission defect.
+- Rebuilt Codex's Graft navigation cache: 85 source map files plus INDEX.md, 672 nodes and 1542 edges. Generated graph files remain local and can be rebuilt from source.
 
-Fresh validation in the publication checkout on Windows with Node 24.5.0: **168 tests passed, zero failures or skips**, including 52 recovery tests and the existing account-review, Sunny, import and CRM suites. A live 28-part, 231,465,552-byte cloud backup passed per-part hashes, the expected complete-file hash and terminal exit. Independent source review found no material defects. Private backup manifests, cloud identifiers, signed URLs and local state are excluded from publication.
+Fresh validation in the publication checkout on Windows with Node 24.5.0: **263 tests passed, zero failures or skips**. The 95 identity/gateway checks also passed on bundled Node 24.14.0. These include 20 authority tests, 23 database-driver protocol tests and 52 transport/adapter/UI checks; nine UI checks use a synthetic DOM. Production Node 22 qualification remains separate.
 
-Streaming verification establishes byte integrity, not a reconstructed-file or complete installation restore. Process-level peak memory, production recovery and recovery without the original Windows profile remain unqualified. No local data is deleted by the verifier.
+This update does not prove actual PostgreSQL syntax/locking/durability, protected Windows bootstrap, production TLS, browser rendering/cookie enforcement or iPhone behavior. The gateway is not activated and no live account/credential is migrated. Private source inventories, records, sessions, backup identifiers and keys are excluded from publication.
 
 ## Earlier integrated source
 
+- The streamed multipart backup verifier checks cloud-part and complete-file hashes without another full local download. The September 23 live 28-part, 231,465,552-byte backup passed hash/terminal checks. That establishes byte integrity, not a reconstructed-file or full installation restore; production/profile-independent recovery remains open. See [streaming recovery](integrations/streaming-recovery.md).
 - The Windows account-review register preserves encrypted case history, checkpoints, approval evidence and notification state. Maximum-length notification identifiers are covered by regression tests. Its protected Sunny route does not enable provider actions, scheduling or a Unity action-inbox panel; Windows-profile encryption is not portable recovery. See [account review](../services/account-review/README.md).
 - The Knowledge district can request owner-protected index counts independently of model availability. It distinguishes an unavailable store from a valid empty index; original documents are checked when accessed. See [knowledge inventory](integrations/knowledge-inventory.md).
 - Text imports preserve UTF-8 originals and provenance; CRM reconciliation retains historical identifiers and opt-out restrictions. See [import history](integrations/import-history.md).
