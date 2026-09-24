@@ -3,12 +3,107 @@ import bpy
 import hashlib
 import json
 import math
+import re
+import sys
 from pathlib import Path
 from mathutils import Vector
+from datetime import datetime, timezone
+
+
+def character_output_directory(root, arguments):
+    """Allow qualification in a new contained directory without touching existing exports."""
+    if not arguments:
+        return root / '.build/characters'
+    if len(arguments) != 2 or arguments[0] != '--output-directory':
+        raise ValueError('Expected --output-directory with a fresh qualification path')
+    relative = arguments[1]
+    parts = relative.split('/')
+    if len(relative) > 240 or len(parts) < 3 or parts[:2] != ['.runtime', 'qualification']:
+        raise ValueError('Output must be a fresh workspace qualification directory')
+    for part in parts[2:]:
+        if not re.fullmatch(r'[A-Za-z0-9_-][A-Za-z0-9_.-]{0,79}', part) or part.endswith('.') or \
+                re.match(r'^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\.|$)', part, re.I):
+            raise ValueError('Unsafe qualification output path')
+    base = root.resolve(strict=True)
+    target = base.joinpath(*parts)
+    current = base
+    for part in parts:
+        current = current / part
+        try:
+            attributes = getattr(current.lstat(), 'st_file_attributes', 0)
+        except FileNotFoundError:
+            attributes = 0
+        if current.is_symlink() or attributes & 0x400:
+            raise ValueError('Reparse paths are not allowed for qualification output')
+        if current.exists() and (current == target or not current.is_dir()):
+            raise ValueError('Qualification output must be fresh')
+    target.mkdir(parents=True, exist_ok=False)
+    if target.resolve(strict=True) != target:
+        raise ValueError('Qualification output containment changed')
+    return target
+
+
+def normalize_deform_weights(obj, skeleton):
+    """Normalize a derived mesh proportionally; validate every vertex before writing."""
+    import struct
+    tolerance = 1e-7
+    deform_names = {bone.name for bone in skeleton.data.bones if bone.use_deform}
+    groups = {group.index: group for group in obj.vertex_groups}
+    vertices = list(obj.data.vertices)
+    if not vertices or not deform_names:
+        raise ValueError('Body normalization requires vertices and deform bones')
+    pending, totals, influence_counts = [], [], []
+    for vertex in vertices:
+        positive, seen = [], set()
+        for member in vertex.groups:
+            if member.group not in groups or member.group in seen:
+                raise ValueError('Body has an invalid vertex group reference')
+            seen.add(member.group)
+            weight = member.weight
+            if not isinstance(weight, (int, float)) or not math.isfinite(weight) or weight < 0:
+                raise ValueError('Body has an invalid vertex weight')
+            if groups[member.group].name in deform_names and weight > 0:
+                positive.append((member.group, weight))
+        try:
+            total = math.fsum(weight for _, weight in positive)
+        except OverflowError as error:
+            raise ValueError('Body deform weight total is invalid') from error
+        if not math.isfinite(total) or total <= 0:
+            raise ValueError('Body has an unweighted vertex')
+        totals.append(total)
+        influence_counts.append(len(positive))
+        normalized = [(index, struct.unpack('<f', struct.pack('<f', weight / total))[0])
+                      for index, weight in positive]
+        if any(weight <= 0 for _, weight in normalized):
+            raise ValueError('Normalization would lose a positive deform influence')
+        if not math.isclose(math.fsum(weight for _, weight in normalized), 1, rel_tol=0, abs_tol=tolerance):
+            raise ValueError('Body normalized weights cannot be represented accurately')
+        if not math.isclose(total, 1, rel_tol=0, abs_tol=tolerance):
+            if any(groups[index].lock_weight for index, _ in normalized):
+                raise ValueError('Body normalization would change a locked vertex group')
+            pending.append((vertex.index, normalized))
+
+    for vertex_index, normalized in pending:
+        for group_index, weight in normalized:
+            groups[group_index].add([vertex_index], weight, 'REPLACE')
+    after = []
+    for vertex, expected_influences in zip(vertices, influence_counts):
+        weights = [member.weight for member in vertex.groups
+                   if groups[member.group].name in deform_names and member.weight > 0]
+        total = math.fsum(weights)
+        if len(weights) != expected_influences or not math.isclose(total, 1, rel_tol=0, abs_tol=tolerance):
+            raise ValueError('Body normalization failed verification')
+        after.append(total)
+    return {'vertices': len(vertices), 'normalizedVertices': len(pending),
+            'maximumInfluences': max(influence_counts), 'influencesPruned': 0,
+            'minimumSumBefore': min(totals), 'maximumSumBefore': max(totals),
+            'minimumSumAfter': min(after), 'maximumSumAfter': max(after), 'sumTolerance': tolerance}
+
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / 'vendor/assets/makehuman-core'
-OUT = ROOT / '.build/characters'
+script_arguments = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
+OUT = character_output_directory(ROOT, script_arguments)
 manifest = json.loads((SOURCE / 'provenance.json').read_text(encoding='utf-8-sig'))
 raw = (SOURCE / 'base.obj').read_bytes()
 assert hashlib.sha256(raw).hexdigest() == manifest['files']['base.obj']['sha256']
@@ -207,6 +302,10 @@ derived.to_mesh(mesh)
 derived.free()
 mesh.update()
 
+# Fitted accessories keep their original inputs. Normalize only the surviving
+# derived body vertices, preserving all positive influences rather than pruning.
+body_weight_normalization = normalize_deform_weights(body, rig)
+
 # A restrained breathing preview proves the deformation path, not production
 # locomotion or facial animation. Bone endpoints come from upstream joint helpers.
 scene=bpy.context.scene
@@ -230,6 +329,113 @@ report={'sourceCommit':manifest['commit'],'heightMetres':1.75,'bodyVertices':len
     'skinSourceSha256':skin_entry['sha256'],
     'eyeVertices':len(eyes.data.vertices),'hairVertices':len(hair.data.vertices),
     'shoeVertices':len(shoes.data.vertices),
+    'bodyWeightNormalization':body_weight_normalization,
     'activated':False,'qualification':'Dressed character candidate; intersections, visual review and Unity validation pending'}
 (OUT/'human-candidate.json').write_text(json.dumps(report,indent=2)+'\n')
 print('PARADIZE_HUMAN_CANDIDATE '+json.dumps(report))
+
+
+def build_modular_manifest(root, output, components, skeleton, blender, core_manifest, asset_manifest):
+    """Inventory this exported candidate without asserting animation or visual qualification."""
+    if core_manifest.get('license') != 'CC0-1.0 (graphical assets only)' or asset_manifest.get('license') != 'CC0':
+        raise ValueError('Character source license evidence changed')
+    def fingerprint(file, base):
+        resolved = file.resolve(strict=True)
+        relative = resolved.relative_to(base.resolve()).as_posix()
+        content = resolved.read_bytes()
+        return {'path': relative, 'bytes': len(content), 'sha256': hashlib.sha256(content).hexdigest()}
+
+    def source_files(folder, entries):
+        files = []
+        for relative, expected in entries:
+            file = fingerprint(folder / relative, root)
+            if file['sha256'] != expected['sha256'] or file['bytes'] != expected['bytes']:
+                raise ValueError('Character source bundle changed')
+            files.append(file)
+        files.append(fingerprint(folder / 'provenance.json', root))
+        return files
+
+    def material_facts(value):
+        if value is None:
+            raise ValueError('Character has a missing material')
+        nodes = list(value.node_tree.nodes) if value.use_nodes and value.node_tree else []
+        images = []
+        for node in nodes:
+            if node.type == 'TEX_IMAGE' and node.image:
+                file = fingerprint(Path(blender.path.abspath(node.image.filepath)), root)
+                if not file['path'].startswith('vendor/assets/'):
+                    raise ValueError('Only reviewed asset textures belong in this manifest')
+                images.append({**file, 'width': int(node.image.size[0]), 'height': int(node.image.size[1]),
+                               'packed': bool(node.image.packed_file)})
+        return {'name': value.name, 'usesNodes': bool(value.use_nodes),
+                'nodeTypes': sorted({node.bl_idname for node in nodes}), 'images': images}
+
+    inventory = []
+    component_ids, object_names = set(), set()
+    for role, obj in components:
+        component_id = role + '-' + hashlib.sha256(obj.name.encode('utf-8')).hexdigest()
+        if component_id in component_ids or obj.name in object_names:
+            raise ValueError('Duplicate character component identity')
+        component_ids.add(component_id)
+        object_names.add(obj.name)
+        data = obj.data
+        data.calc_loop_triangles()
+        counts, sums = [], []
+        deform_names = {bone.name for bone in skeleton.data.bones if bone.use_deform}
+        for vertex in data.vertices:
+            weights = [group.weight for group in vertex.groups
+                       if group.weight > 0 and obj.vertex_groups[group.group].name in deform_names]
+            counts.append(len(weights)); sums.append(sum(weights))
+        coordinates = [obj.matrix_world @ vertex.co for vertex in data.vertices]
+        armatures = [modifier.object.name for modifier in obj.modifiers
+                     if modifier.type == 'ARMATURE' and modifier.object]
+        inventory.append({'id': component_id, 'role': role, 'objectName': obj.name, 'meshName': data.name,
+                          'vertices': len(data.vertices), 'polygons': len(data.polygons),
+                          'triangles': len(data.loop_triangles), 'uvLayers': [layer.name for layer in data.uv_layers],
+                          'boundsWorld': {'min': [min(point[axis] for point in coordinates) for axis in range(3)],
+                                          'max': [max(point[axis] for point in coordinates) for axis in range(3)]},
+                          'armatures': armatures,
+                          'weights': {'maximumInfluences': max(counts, default=0),
+                                      'unweightedVertices': sum(value < .001 for value in sums),
+                                      'unnormalizedVertices': sum(abs(value - 1) > .01 for value in sums)},
+                          'shapeKeys': [key.name for key in data.shape_keys.key_blocks] if data.shape_keys else [],
+                          'materials': [material_facts(value) for value in data.materials]})
+    action = skeleton.animation_data.action if skeleton.animation_data else None
+    scene = blender.context.scene
+    return {
+        'schemaVersion': 1, 'characterId': 'sunny', 'profile': 'makehuman-dressed-candidate-v1',
+        'generatedAt': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
+        'generator': {'blenderVersion': blender.app.version_string,
+                      'scripts': [fingerprint(root / 'scripts/characters' / name, root)
+                                  for name in ('build-human.py', 'fit-human-assets.py')]},
+        'coordinates': {'space': 'blender-world', 'unitSystem': scene.unit_settings.system,
+                        'unitScale': scene.unit_settings.scale_length, 'upAxis': 'Z',
+                        'fbxForwardAxis': '-Z', 'fbxUpAxis': 'Y'},
+        'artifacts': [{'role': role, **fingerprint(output / name, output)} for role, name in
+                      [('editable-source', 'human-candidate.blend'), ('unity-candidate', 'human-candidate.fbx')]],
+        'sources': [
+            {'id': 'makehuman-core', 'origin': core_manifest['repository'], 'license': 'CC0-1.0', 'licenseScope': 'graphical-assets-only',
+             'revision': {'kind': 'git-commit', 'value': core_manifest['commit']},
+             'scope': 'preserved-bundle', 'files': source_files(root / 'vendor/assets/makehuman-core', core_manifest['files'].items())},
+            {'id': 'makehuman-system-selected', 'origin': asset_manifest['licenseEvidence'], 'license': 'CC0-1.0', 'licenseScope': 'graphical-assets-only',
+             'revision': {'kind': 'archive-sha256', 'value': asset_manifest['archiveSha256']},
+             'scope': 'preserved-bundle', 'files': source_files(root / 'vendor/assets/makehuman-system-selected',
+                                                             ((item['path'], item) for item in asset_manifest['files']))}],
+        'components': inventory,
+        'skeleton': {'objectName': skeleton.name, 'bones': [
+            {'name': bone.name, 'parent': bone.parent.name if bone.parent else None,
+             'headLocal': list(bone.head_local), 'tailLocal': list(bone.tail_local), 'deform': bool(bone.use_deform)}
+            for bone in skeleton.data.bones]},
+        'animation': {'actionNames': [action.name] if action else [], 'frameStart': scene.frame_start,
+                      'frameEnd': scene.frame_end, 'fps': scene.render.fps / scene.render.fps_base},
+        'policy': {'appearance': 'realistic-pbr', 'paidGenerationAllowed': False, 'runtimePermissionGranted': False},
+        'qualification': {'evidence': 'blender-datablocks-and-file-hashes', 'activated': False,
+                          **{key: 'pending' for key in ('visualRealism', 'unityImport', 'humanoidRetargeting',
+                             'locomotion', 'facialAnimation', 'secondaryMotion', 'vrmRoundtrip', 'lodPerformance')}}
+    }
+
+
+modular = build_modular_manifest(ROOT, OUT, [('body', body), ('clothing', cloth), ('footwear', shoes),
+                                          ('hair', hair), ('eyes', eyes)], rig, bpy, manifest, selected_manifest)
+(OUT / 'human-candidate.modular.json').write_text(json.dumps(modular, indent=2, allow_nan=False)+'\n', encoding='utf-8')
+print('PARADIZE_MODULAR_INVENTORY character=sunny qualification=pending')
