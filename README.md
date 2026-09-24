@@ -10,7 +10,7 @@ PARADIZE is a private, local-first systems environment with a Unity island as it
 - A rigged, dressed Sunny character candidate with a breathing animation. Other characters remain procedural prototypes; photorealism and finished animation are not qualified.
 - A loopback-only, owner-token-protected Sunny service using an installed local Ollama model. Paid providers and fallback calls are disabled.
 - Explicit knowledge search, grounded answers, preserved-source verification and protected source-copy support. Personal documents must be imported separately.
-- Consent-preserving Tech Help staging and CRM reconciliation proposals, bounded artifact/job records, encrypted synthetic recovery and multipart backup verification.
+- Consent-preserving Tech Help staging and CRM reconciliation proposals, bounded artifact/job records, encrypted synthetic recovery and [streamed multipart backup verification](docs/integrations/streaming-recovery.md) without another full local download.
 - A Windows-encrypted account action register with case history, approval checks and an owner-protected review endpoint. Provider actions, scheduling and a Unity action-inbox panel remain separate integrations. See [account review](services/account-review/README.md).
 - Synthetic tests, Windows launch/build helpers, and repository-scoped Codex/Graft instructions.
 

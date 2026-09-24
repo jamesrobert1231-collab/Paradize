@@ -59,7 +59,7 @@ async function absent(target) {
   throw new Error('Destination already exists');
 }
 
-async function readManifest(manifestPath) {
+export async function readManifest(manifestPath) {
   const { handle, before } = await safeOpen(manifestPath);
   let manifest;
   try {
@@ -76,6 +76,10 @@ async function readManifest(manifestPath) {
     await unchanged(manifestPath, handle, before);
     manifest = JSON.parse(buffer.subarray(0, offset).toString('utf8'));
   } finally { await handle.close(); }
+  return validateDrivePartsManifest(manifest);
+}
+
+export function validateDrivePartsManifest(manifest) {
   if (!manifest || manifest.version !== 1 || typeof manifest.backupId !== 'string' ||
       !manifest.backupId || manifest.backupId.length > 256 || /[\x00-\x1f\x7f]/.test(manifest.backupId)) {
     throw new Error('Invalid version 1 backup manifest');

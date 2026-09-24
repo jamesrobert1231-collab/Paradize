@@ -4,16 +4,17 @@ PARADIZE remains a developing private Unity environment with Sunny as its conver
 
 ## Current source update
 
-- Added the Windows account-review register: encrypted case history, per-source checkpoints, explicit approval evidence, dispatch-attempt records and notification deduplication. The owner-only Sunny bridge exposes its review plan without invoking a model or enabling external actions. See [account review](../services/account-review/README.md).
-- Corrected acknowledgment of notifications for maximum-length source and case identifiers. Valid records can now be marked reported without repeating unchanged notices; invalid identifiers and mismatched fingerprints remain rejected. A failing regression reproduced the original error before the fix.
-- Updated the developer documentation and rebuilt Codex's Graft navigation cache: 68 source map files plus INDEX.md, 444 nodes and 947 edges. Generated graph files remain local and can be rebuilt from source.
+- Added a streamed multipart backup verifier that checks every cloud part and the ordered complete-file hash without creating another local installer. It reuses the existing restore manifest validation and records `restored:false`. See [streaming recovery](integrations/streaming-recovery.md).
+- Added bounded input and download handling, sanitized failure messages, and explicit Windows terminal framing and cleanup. Short terminal receipts correct wrapping that interrupted the initial live trial.
+- Rebuilt Codex's Graft navigation cache: 70 source map files plus INDEX.md, 466 nodes and 1015 edges. Generated graph files remain local and can be rebuilt from source.
 
-Fresh validation in the publication checkout on Windows with Node 24.5.0: **155 tests passed, zero failures or skips**. This includes actual DPAPI-encrypted temporary SQLite storage, reopen/readback, concurrent revision conflicts, corruption handling, the protected Sunny review route, approval and notification boundaries, plus the existing Sunny, import, CRM and recovery suites. The focused model suite passed all 18 tests after the notification fix. The staged diff passed whitespace validation and a review for private paths, credentials and records.
+Fresh validation in the publication checkout on Windows with Node 24.5.0: **168 tests passed, zero failures or skips**, including 52 recovery tests and the existing account-review, Sunny, import and CRM suites. A live 28-part, 231,465,552-byte cloud backup passed per-part hashes, the expected complete-file hash and terminal exit. Independent source review found no material defects. Private backup manifests, cloud identifiers, signed URLs and local state are excluded from publication.
 
-The register is not a standalone account connector or an autonomous executor. Its Windows-profile encryption is not a portable backup. There is no Unity action-inbox panel or verified mobile delivery yet. Tests use synthetic temporary state and do not modify live accounts, credentials or scheduler settings.
+Streaming verification establishes byte integrity, not a reconstructed-file or complete installation restore. Process-level peak memory, production recovery and recovery without the original Windows profile remain unqualified. No local data is deleted by the verifier.
 
 ## Earlier integrated source
 
+- The Windows account-review register preserves encrypted case history, checkpoints, approval evidence and notification state. Maximum-length notification identifiers are covered by regression tests. Its protected Sunny route does not enable provider actions, scheduling or a Unity action-inbox panel; Windows-profile encryption is not portable recovery. See [account review](../services/account-review/README.md).
 - The Knowledge district can request owner-protected index counts independently of model availability. It distinguishes an unavailable store from a valid empty index; original documents are checked when accessed. See [knowledge inventory](integrations/knowledge-inventory.md).
 - Text imports preserve UTF-8 originals and provenance; CRM reconciliation retains historical identifiers and opt-out restrictions. See [import history](integrations/import-history.md).
 - Sunny requires the local inference daemon to confirm cloud access is disabled before conversation data is sent. Credential rotation invalidates the running bridge. See [local-only inference](integrations/local-only-inference.md) and [credential revocation](integrations/credential-revocation.md).
