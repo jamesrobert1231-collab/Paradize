@@ -8,6 +8,7 @@ PARADIZE is a private, local-first systems environment with a Unity island as it
 
 - A seeded limestone island, beaches, lagoon, district navigation, coastal textures, moving water, approximate moon phases and illustrative lunar/solar tides.
 - A rigged, dressed Sunny character candidate with a breathing animation. Other characters remain procedural prototypes; photorealism and finished animation are not qualified.
+- A [modular character authoring workflow](docs/integrations/modular-characters.md) with source/file integrity checks and fresh Blender qualification exports. Inventory verification is separate from visual, VRM and Unity acceptance.
 - A loopback-only, owner-token-protected Sunny service using an installed local Ollama model. Paid providers and fallback calls are disabled.
 - Staged owner/device identity and a private HTTPS browser companion with single-use pairing, session revocation and local Sunny chat. Live database, trusted-launcher and iPhone qualification remain open. See [identity and browser access](docs/integrations/identity-foundation.md).
 - Explicit knowledge search, grounded answers, preserved-source verification and protected source-copy support. Personal documents must be imported separately.
@@ -31,7 +32,7 @@ The local token is provisioned under the normal Windows account in excluded `.ru
 
 ## Verify
 
-With Node 24 on PATH, run all synthetic Node checks from the repository root:
+With Node 24 and Python 3 on PATH, run all synthetic Node checks from the repository root. Character authoring tests execute the actual Python helpers with synthetic Blender-like objects; they do not require Blender. Set `PARADIZE_PYTHON` to an absolute Python executable if needed.
 
 ```powershell
 $testFiles = Get-ChildItem services,modules,tests -Recurse -Filter '*.test.mjs' -File | ForEach-Object FullName

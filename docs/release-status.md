@@ -4,12 +4,22 @@ PARADIZE remains a developing private Unity environment with Sunny as its conver
 
 ## Current source update
 
+- Added a modular Blender export inventory with stable component identities, source/artifact hashes, an offline inspector and fresh qualification output paths. See [modular character authoring](integrations/modular-characters.md).
+- Corrected derived body weights after accessory fitting and occlusion. Normalization retains every positive influence and preserves its relative proportion; five-influence vertices remain visible for Unity qualification.
+- All 13 affected tests passed on Node 24.5.0/Python 3.13.5. A fresh Blender 5.2.1 LTS export and independent saved-Blender/FBX comparison passed: weight sums are within `1e-7`, all 76 five-influence vertices remain, and geometry/materials/skeleton/accessory weights are unchanged.
+- The 50 watched earlier candidate files remained unchanged. Generated qualification artifacts stay private and the installed/public character was not replaced. Visual realism, Unity deformation, Humanoid retargeting and VRM remain unqualified.
+- Graft now indexes 87 public source files, with 700 nodes and 1629 edges. Its generated cache remains excluded from Git.
+
+An optional character preview was skipped when available RAM fell below the 2 GiB qualification floor. This update changes authoring source and evidence; it does not release a new player or enable a paid generation service.
+
+## September 24 identity and browser source update
+
 - Added staged persistent-owner authority, typed device sessions, atomic pairing, revocation history and a PostgreSQL 17 storage adapter/migration. Trusted-local administration stays separate from remote capabilities. See [identity foundation](integrations/identity-foundation.md).
 - Added a direct-HTTPS browser gateway and accessible pairing/Sunny pages. Protected cookies, exact-origin checks and a session-bound request nonce guard browser mutations. Access is rechecked before inference and protected output; cancellation affects only the requesting device. No native/global STOP or account permissions are exposed.
 - Added a bounded local Sunny adapter with protocol validation and no paid fallback. Real HTTPS-to-native-Sunny tests use synthetic identity storage and model output. Independent review reproduced and closed a revocation-during-upload admission defect.
 - Rebuilt Codex's Graft navigation cache: 85 source map files plus INDEX.md, 672 nodes and 1542 edges. Generated graph files remain local and can be rebuilt from source.
 
-Fresh validation in the publication checkout on Windows with Node 24.5.0: **263 tests passed, zero failures or skips**. The 95 identity/gateway checks also passed on bundled Node 24.14.0. These include 20 authority tests, 23 database-driver protocol tests and 52 transport/adapter/UI checks; nine UI checks use a synthetic DOM. Production Node 22 qualification remains separate.
+That update's validation in the publication checkout on Windows with Node 24.5.0: **263 tests passed, zero failures or skips**. The 95 identity/gateway checks also passed on bundled Node 24.14.0. These include 20 authority tests, 23 database-driver protocol tests and 52 transport/adapter/UI checks; nine UI checks use a synthetic DOM. Production Node 22 qualification remains separate.
 
 This update does not prove actual PostgreSQL syntax/locking/durability, protected Windows bootstrap, production TLS, browser rendering/cookie enforcement or iPhone behavior. The gateway is not activated and no live account/credential is migrated. Private source inventories, records, sessions, backup identifiers and keys are excluded from publication.
 
