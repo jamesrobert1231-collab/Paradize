@@ -9,6 +9,7 @@ PARADIZE is a private, local-first systems environment with a Unity island as it
 - A seeded limestone island, beaches, lagoon, district navigation, coastal textures, moving water, approximate moon phases and illustrative lunar/solar tides.
 - A rigged, dressed Sunny character candidate with a breathing animation. Other characters remain procedural prototypes; photorealism and finished animation are not qualified.
 - A loopback-only, owner-token-protected Sunny service using an installed local Ollama model. Paid providers and fallback calls are disabled.
+- Staged owner/device identity and a private HTTPS browser companion with single-use pairing, session revocation and local Sunny chat. Live database, trusted-launcher and iPhone qualification remain open. See [identity and browser access](docs/integrations/identity-foundation.md).
 - Explicit knowledge search, grounded answers, preserved-source verification and protected source-copy support. Personal documents must be imported separately.
 - Consent-preserving Tech Help staging and CRM reconciliation proposals, bounded artifact/job records, encrypted synthetic recovery and [streamed multipart backup verification](docs/integrations/streaming-recovery.md) without another full local download.
 - A Windows-encrypted account action register with case history, approval checks and an owner-protected review endpoint. Provider actions, scheduling and a Unity action-inbox panel remain separate integrations. See [account review](services/account-review/README.md).
@@ -26,7 +27,7 @@ PARADIZE is a private, local-first systems environment with a Unity island as it
 
 Use right mouse + WASD to fly, Q/E for altitude, Shift for speed, and F1 for Sunny's panel. District controls move the viewpoint. The lunar slider is a preview; return to live UTC afterwards. The tide is illustrative, not a navigation or coastal safety prediction.
 
-The local token is provisioned under the normal Windows account in excluded `.runtime/` storage. This native bridge is not the future browser/iPhone gateway. Do not expose its port through a proxy or copy its token into an asset, installer, or Git.
+The local token is provisioned under the normal Windows account in excluded `.runtime/` storage. This native bridge is separate from the staged browser/iPhone gateway. Do not expose its port through a proxy or copy its token into an asset, installer, or Git. The gateway remains unbound until its database, bootstrap and production TLS boundaries are qualified.
 
 ## Verify
 
@@ -38,7 +39,7 @@ node --test --test-concurrency=2 @testFiles
 ./tests/unity/verify-source-copies.ps1
 ```
 
-The second command requires the installed Unity editor and Windows .NET Framework tools. It checks protected source-copy storage under .NET and Unity Mono and compiles the runtime C# against Unity's .NET Standard 2.1 references. Neither command proves real-device access or a complete release journey.
+The browser TLS tests require PowerShell 7; set `PARADIZE_TEST_PWSH` to its absolute executable path if needed. They generate short-lived synthetic certificates in memory and do not alter the Windows certificate store. The second command requires the installed Unity editor and Windows .NET Framework tools. It checks protected source-copy storage under .NET and Unity Mono and compiles the runtime C# against Unity's .NET Standard 2.1 references. Neither command proves real-device access or a complete release journey.
 
 ## Codex navigation
 

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
+  <title>Sunny · PARADIZE</title>
+  <link rel="stylesheet" href="/assets/style.css">
+  <script src="/assets/client.js" defer></script>
+</head>
+<body data-page="sunny">
+  <a class="skip-link" href="#main">Skip to Sunny</a>
+  <div class="workspace">
+    <header class="masthead">
+      <a class="brand" href="/" aria-label="PARADIZE home">PARADIZE<span>Private workspace</span></a>
+      <button id="disconnect" class="quiet-button" type="button" disabled>Disconnect this device</button>
+    </header>
+    <main id="main" class="chat-layout">
+      <section class="intro" aria-labelledby="sunny-title">
+        <p class="eyebrow">Your personal assistant</p>
+        <h1 id="sunny-title">Hello, Sunny.</h1>
+        <p>Space to think, ask, and work through your next step.</p>
+        <div class="connection-card">
+          <h2>Connection</h2>
+          <p id="session-status">Checking this device…</p>
+          <p id="health-status">Sunny’s availability has not been checked.</p>
+          <button id="refresh" class="quiet-button" type="button">Check connection</button>
+        </div>
+        <p class="scope-note">This view supports local chat. Account connections and autonomous tools are not enabled here. Conversation stays in this page’s memory and clears when you leave or disconnect.</p>
+      </section>
+      <section class="chat-panel" aria-labelledby="conversation-title">
+        <div class="panel-heading"><h2 id="conversation-title">Conversation</h2><span class="private-label">Private</span></div>
+        <p id="empty-chat" class="empty-chat">Your conversation will appear here once this device is connected and Sunny is ready.</p>
+        <ol id="conversation" class="conversation" role="log" aria-label="Conversation with Sunny" aria-live="polite" aria-relevant="additions"></ol>
+        <p id="notice" class="notice" role="status" aria-live="polite"></p>
+        <form id="chat-form" class="composer">
+          <label for="message">Message Sunny</label>
+          <textarea id="message" name="message" rows="4" maxlength="2000" placeholder="What would you like to work on?" aria-describedby="message-help" required disabled></textarea>
+          <p id="message-help" class="input-help">Up to 2,000 characters. Ctrl + Enter or ⌘ + Enter to send.</p>
+          <div class="composer-actions">
+            <button id="cancel" class="quiet-button" type="button" disabled>Stop this device’s reply</button>
+            <button id="send" class="primary-button" type="submit" disabled>Send to Sunny</button>
+          </div>
+        </form>
+      </section>
+    </main>
+    <footer>PARADIZE · Your private workspace</footer>
+  </div>
+  <noscript><p class="noscript">JavaScript is needed to connect this device and speak with Sunny. No access has been granted by opening this page.</p></noscript>
+</body>
+</html>
