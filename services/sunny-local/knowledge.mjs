@@ -44,9 +44,9 @@ function readStoredFile(file, maxBytes) {
   } finally { fs.closeSync(fd); }
 }
 
-function readIndex(directory) {
+function readIndex(directory, { allowMissing = true } = {}) {
   const file = path.join(directory, 'index.json');
-  if (!fs.existsSync(file)) return [];
+  if (allowMissing && !fs.existsSync(file)) return [];
   let data;
   try { data = JSON.parse(readStoredFile(file, MAX_BYTES).toString('utf8')); }
   catch { throw new Error('Invalid knowledge index'); }
@@ -57,6 +57,19 @@ function readIndex(directory) {
     ids.add(r.id);
   }
   return data.records;
+}
+
+export function knowledgeStatus(directory) {
+  // A missing index is unknown, not evidence of an empty source collection.
+  // This checks index integrity only; originals remain verified on access.
+  const records = readIndex(directory, { allowMissing: false });
+  return {
+    knowledgeState: records.length ? 'index-ready' : 'no-records',
+    recordCount: records.length,
+    sourceCount: new Set(records.map(record => record.source)).size,
+    originalVerification: 'on-access',
+    historicalAuthority: false,
+  };
 }
 
 function originalBytes(directory, record) {
