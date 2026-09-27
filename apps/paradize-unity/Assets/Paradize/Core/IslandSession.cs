@@ -27,6 +27,8 @@ namespace Paradize
         bool useKnowledge;
         string knowledgeQuery = "";
         bool panel = true;
+        bool showAgents;
+        readonly IslandAgentDirectory agentDirectory=new IslandAgentDirectory();
         string token, ownerTokenFile, connection="Local controls";
         string sourceCopyStatus="";
         string knowledgeStatus="Imported knowledge has not been checked this session.";
@@ -87,18 +89,21 @@ namespace Paradize
             Application.targetFrameRate = 45;
             if (Ocean != null) Ocean.Initialize();
             if (View != null) { yaw = View.transform.eulerAngles.y; pitch = View.transform.eulerAngles.x; }
-            if (SunnyCharacter == null) SunnyCharacter = CreateCharacter("SUNNY", new Color(1f,.72f,.3f), Vector3.zero);
+            if (SunnyCharacter == null) SunnyCharacter = CreateCharacter(IslandAgentDirectory.Find("sunny").Name, new Color(1f,.72f,.3f), Vector3.zero);
             for (int i=1;i<Keys.Length;i++)
-                if (Island != null && Island.DistrictPositions.TryGetValue(Keys[i],out var p))
-                    CreateCharacter(new[]{"","ARCHIVIST","LEDGER","EVE","ATLAS","DIRECTOR","SENTINEL"}[i], Color.HSVToRGB(i/8f,.5f,1),p+Vector3.up*3f);
+            {
+                var agent=agentDirectory.Agents[i];
+                if (Island != null && Island.DistrictPositions.TryGetValue(Keys[agent.DistrictIndex],out var p))
+                    CreateCharacter(agent.Name, Color.HSVToRGB(i/8f,.5f,1),p+Vector3.up*3f);
+            }
             StartCoroutine(CaptureIfRequested());
             StartCoroutine(CheckSunny());
             if(Array.IndexOf(Environment.GetCommandLineArgs(),"--verify-journey")>=0) gameObject.AddComponent<IslandJourneyValidation>();
             if(Island!=null && Island.DistrictPositions.TryGetValue("agents",out var agentPlaza))
             {
-                CreateCharacter("GODFRY",new Color(.7f,.5f,1),agentPlaza+new Vector3(-6,3,0));
-                CreateCharacter("STORMY",new Color(.3f,.8f,1),agentPlaza+new Vector3(0,3,6));
-                CreateCharacter("MASKED",new Color(.8f,.9f,.9f),agentPlaza+new Vector3(6,3,0));
+                CreateCharacter(IslandAgentDirectory.Find("godfry").Name,new Color(.7f,.5f,1),agentPlaza+new Vector3(-6,3,0));
+                CreateCharacter(IslandAgentDirectory.Find("stormy").Name,new Color(.3f,.8f,1),agentPlaza+new Vector3(0,3,6));
+                CreateCharacter(IslandAgentDirectory.Find("masked").Name,new Color(.8f,.9f,.9f),agentPlaza+new Vector3(6,3,0));
             }
         }
 
@@ -339,8 +344,15 @@ namespace Paradize
             if(!Island.DistrictPositions.TryGetValue(Keys[index],out var p)) return;
             View.transform.position=p+new Vector3(24,17,-38); View.transform.LookAt(p+Vector3.up*7);
             yaw=View.transform.eulerAngles.y; pitch=View.transform.eulerAngles.x; ActiveDistrict=Names[index]; page=index;
-            SunnyMessage=Details[index];
             if(index==1)StartCoroutine(CheckKnowledge());
+        }
+
+        public bool SelectAgent(string id)
+        {
+            if(!agentDirectory.Select(id)) return false;
+            panel=true;
+            showAgents=true;
+            return true;
         }
 
         public void Ask(string command)
@@ -694,7 +706,19 @@ namespace Paradize
                 }
             }
             if(!string.IsNullOrEmpty(sourceCopyStatus)){GUILayout.Label(sourceCopyStatus,label);GUILayout.Space(12);}
+            if(GUILayout.Button(showAgents?"Hide agent directory":"Show agent directory",button))showAgents=!showAgents;
+            if(showAgents)
+            {
+                var selected=agentDirectory.Selected;
+                GUILayout.Label(selected.Name+"  /  "+Names[selected.DistrictIndex],label);
+                GUILayout.Label(selected.ConnectionLabel ?? (Stopped?"Island paused":connection),small);
+                GUILayout.Label(selected.Availability,body);
+                foreach(var agent in agentDirectory.Agents)
+                    if(GUILayout.Button(agent.Name+(agent==selected?"   •":""),button))SelectAgent(agent.Id);
+                GUILayout.Space(12);
+            }
             GUILayout.Label("ISLAND DISTRICTS",small);
+            GUILayout.Label(Details[page],body);
             for(int i=0;i<Names.Length;i++) { if(GUILayout.Button(Names[i]+(page==i?"   •":""),button)) Visit(i); }
             GUILayout.Space(12); GUILayout.Label("LUNAR PREVIEW",small);
             float nextPreview=GUILayout.HorizontalSlider(previewDays,0,29.53059f);
