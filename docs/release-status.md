@@ -1,8 +1,18 @@
-# Source update status — 2026-09-24
+# Source update status — 2026-09-27
 
 PARADIZE remains a developing private Unity environment with Sunny as its conversational interface. This public repository contains reviewed source and licensed assets. Updating it does not activate account connections, scheduled work, generated-code execution or a new installed player.
 
 ## Current source update
+
+- Added explicit creation and read-only loading of stable owner, installation and native-device IDs protected by Windows CurrentUser encryption and owner/SYSTEM permissions. Corrupt records, unexpected permissions, links and interrupted setup fail without replacing the owner.
+- Added a bounded inherited-pipe owner-initialization protocol using the existing PostgreSQL adapter. It creates no sessions, opens no listener and returns sanitized failure codes. Commit uncertainty is not automatically retried. See [Windows bootstrap](../services/identity/README.md).
+- All 20 focused configuration/bootstrap tests passed on Windows with Node 24.5.0. They exercise real encryption, filesystem permissions and child pipes; database behavior uses a scripted driver. Production Node 22, PostgreSQL, launcher lifecycle and native-session binding remain unqualified.
+- Added the approved continuation rules to AGENTS.md: targeted graph context, bounded milestones, distinct delegation, proportionate verification, durable checkpoints and compact reporting while preserving release requirements.
+- The complete publication suite passed **296 tests with zero failures or skips** on bundled Node 24.14.0. Graft rebuilt 93 public source maps, 734 nodes and 1721 edges; the generated cache remains excluded from Git.
+
+This source does not activate the bootstrap in the installed product or migrate a live owner, session or account. CurrentUser encryption alone does not qualify restoration under another Windows profile.
+
+## September 24 character source update
 
 - Added a modular Blender export inventory with stable component identities, source/artifact hashes, an offline inspector and fresh qualification output paths. See [modular character authoring](integrations/modular-characters.md).
 - Corrected derived body weights after accessory fitting and occlusion. Normalization retains every positive influence and preserves its relative proportion; five-influence vertices remain visible for Unity qualification.

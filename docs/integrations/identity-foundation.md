@@ -42,3 +42,35 @@ See the [authority contract](../../packages/auth/README.md),
 [database qualification](../../packages/auth/README-postgres.md),
 [browser gateway](../../services/gateway/README.md) and
 [release status](../release-status.md).
+
+## September 24 follow-up — protected owner initialization
+
+`packages/auth/windows-owner-config.mjs` and `protect-owner-config.ps1` now
+provide explicit fresh creation and read-only loading of distinct stable owner,
+installation and native-device identifiers. The record uses Windows CurrentUser
+DPAPI and exact owner/SYSTEM filesystem permissions. Existing empty directories,
+pending files, corrupt records, unexpected permissions, hardlinks and reparse
+paths stop setup; they are not repaired or replaced automatically.
+
+`services/identity/windows-bootstrap.mjs` connects that existing protected record
+to the PostgreSQL authority. Its short-lived child protocol accepts one bounded
+`initialize-owner` request through inherited standard pipes and waits for EOF
+before acting. It creates no session or pairing grant and opens no listener.
+Conflicting owner/installation IDs and uncertain commits remain distinct failures.
+A reviewed broken-pipe defect was reproduced and corrected so a disconnected
+launcher does not cause an unhandled error stack.
+
+This source is not wired into the live launcher. The production PostgreSQL pool,
+driver and database still require qualification, as does native Sunny session
+binding. Copying the DPAPI record does not qualify recovery under another Windows
+profile. See [bootstrap contract and limits](../../services/identity/README.md).
+
+September 27 verification: all **20 focused Windows configuration/bootstrap
+tests passed** on Node 24.5.0, with no failures or skips. This includes actual
+CurrentUser encryption, protected ACLs, process restart, competing creators,
+interruption after reserving storage, corrupted records and inherited child
+pipes. Database behavior in these checks still uses a scripted driver, not a
+PostgreSQL server. No production identity record or live session was created.
+
+Overall consolidation remains approximately **39%**, a planning estimate. This
+source foundation does not complete persistent-login or release acceptance.

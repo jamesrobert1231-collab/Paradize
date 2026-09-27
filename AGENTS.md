@@ -40,4 +40,39 @@ After big code changes, refresh the graph with `graft build` (deterministic,
 no API key, $0).
 <!-- graft:end -->
 
-PARADIZE setup note: use `./graft.cmd` when the global `graft` command is not on PATH. The September 24 public-source refresh covers 87 C#, JavaScript, and Python source files across apps, packages, modules, services, scripts, and tests. Rebuild after source changes rather than treating this count as fixed. Vendor snapshots, PowerShell, SQL migrations, documentation, and other unindexed files require direct source inspection. Graph rankings and inferred edges are navigation aids; verify source behavior before drawing conclusions. See docs/integrations/graft.md for the local Kotlin compatibility patch and coverage limits.
+PARADIZE setup note: use `./graft.cmd` when the global `graft` command is not on PATH. The September 27 publication graph covers 93 C#, JavaScript, and Python source files across apps, packages, modules, services, scripts, and tests. Rebuild after source changes rather than treating this count as fixed. Vendor snapshots, PowerShell, SQL migrations, documentation, and other unindexed files require direct source inspection. Graph rankings and inferred edges are navigation aids; verify source behavior before drawing conclusions. See docs/integrations/graft.md for the local Kotlin compatibility patch and coverage limits.
+
+## Efficient continuation — approved September 27, 2026
+
+Apply these rules when the user next resumes PARADIZE. Saving tokens must not
+reduce the agreed scope, evidence standards or release acceptance requirements.
+
+- Use Graft first as above; read exact source spans and inspect unindexed files
+  directly. Reuse verified context instead of repeating broad discovery.
+- Finish one bounded integration milestone, including relevant tests and review,
+  before expanding scope. Continue independent work when a dependency is blocked.
+- Delegate only distinct work that benefits from parallelism. Supply minimal
+  sufficient context and one owner per write surface; use independent review for
+  consequential changes without duplicating the implementation investigation.
+- Run affected checks during development and broader checks at integration or
+  release milestones. Repeat checks for changed code, failures, stale environment
+  evidence or unresolved risks; never omit required acceptance checks.
+- Keep concise durable checkpoints in the existing project progress documents:
+  decisions, changed files/revisions, validation results and limits, outstanding
+  work, and exact resume steps. Keep private receipts and detailed logs in excluded
+  local storage, without copying credentials or personal records into public docs.
+- Batch independent reads, bound tool output and show relevant errors or concise
+  summaries. Retain full logs locally; inspect omitted detail when necessary.
+- Report briefly: what changed, what passed, what remains and the overall
+  completion estimate. Label estimates and historical results; do not inflate
+  progress based on source changes or passing synthetic tests alone.
+
+On continuation, reconcile checkpoints with current files, diffs, receipts and
+any still-running processes before acting. Resume valid transfers/builds instead
+of duplicating them. Refresh only evidence affected by changes or elapsed time.
+Do not assume interrupted work completed or restart it from an observation gap.
+
+Preserve authentication, privacy, data reconciliation, recovery, sandbox isolation
+and real Unity/device validation. Distinguish implemented source, synthetic
+verification, activated runtime and release acceptance. These efficiency rules
+authorize no new actions and do not themselves resume the goal.
