@@ -4,6 +4,12 @@ PARADIZE remains a developing private Unity environment with Sunny as its conver
 
 ## Current source update
 
+- Added the island agent directory with all ten established identities and district mappings. Selecting characters and navigating districts now preserve Sunny's current answer. Unconnected workers remain visibly unavailable and gain no capabilities. See [agent directory](integrations/agent-directory.md).
+- The exact publication copy passed 95 focused checks, 51 bridge checks and 12 source-copy checks on both .NET Framework and Unity Mono, plus 25 health-contract checks and full runtime C# compilation against Unity's .NET Standard 2.1 references. The baseline navigation failure was reproduced before the fix.
+- Graft now contains 96 public source maps, 817 nodes and 1827 edges. Live player layout, input, selection, STOP/resume, asset loading and performance remain unqualified. No installed player or worker was activated.
+
+## September 27 native Sunny sessions
+
 - Added explicit native-session identity to Sunny, with per-request revocation/expiry leases, cancellation, and authorization checks before inference, private JSON/original-file output and STOP/resume changes. Invalid or unavailable identity cannot fall back to the legacy credential. See [native session binding](integrations/native-session-binding.md).
 - Independent review reproduced and closed a race between awaited authorization and protected output/control changes. Early denial of an incomplete upload also now closes the connection promptly. All **21 focused identity tests and 77 Sunny tests passed** on Node 24.5.0, with no failures or skips.
 - The identity tests exercise real authority and HTTP behavior with synthetic memory storage and model responses. PostgreSQL 17, native-session issuance/delivery, production Node 22, installed launcher, real-device and profile-independent recovery qualification remain open. The current launcher credential and protocol version 2 remain in use.
@@ -51,7 +57,7 @@ This update does not prove actual PostgreSQL syntax/locking/durability, protecte
 - Sunny requires the local inference daemon to confirm cloud access is disabled before conversation data is sent. Credential rotation invalidates the running bridge. See [local-only inference](integrations/local-only-inference.md) and [credential revocation](integrations/credential-revocation.md).
 - The human FBX in this public repository has normalized source paths and retained asset attribution. The private original is preserved. Fresh Unity import/render qualification of the public copy remains required.
 
-Earlier source checks passed 51 bridge-contract assertions and 12 source-copy assertions on both .NET Framework and Unity Mono; runtime C# compiled against Unity's .NET Standard 2.1 references. Those are historical source checks, not fresh player or visual acceptance results. This update does not change Unity C# or assets.
+Earlier source checks passed 51 bridge-contract assertions and 12 source-copy assertions on both .NET Framework and Unity Mono; runtime C# compiled against Unity's .NET Standard 2.1 references. Those historical checks predate the directory changes; fresh source checks for this update are reported above. They do not establish player or visual acceptance.
 
 ## Remaining release requirements
 

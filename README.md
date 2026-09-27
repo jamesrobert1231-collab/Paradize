@@ -7,6 +7,7 @@ PARADIZE is a private, local-first systems environment with a Unity island as it
 ## Included
 
 - A seeded limestone island, beaches, lagoon, district navigation, coastal textures, moving water, approximate moon phases and illustrative lunar/solar tides.
+- An [agent directory](docs/integrations/agent-directory.md) inside Sunny's panel, with ten preserved identities, explicit disconnected-worker status and district navigation that retains the current answer. Live player qualification is pending.
 - A rigged, dressed Sunny character candidate with a breathing animation. Other characters remain procedural prototypes; photorealism and finished animation are not qualified.
 - A [modular character authoring workflow](docs/integrations/modular-characters.md) with source/file integrity checks and fresh Blender qualification exports. Inventory verification is separate from visual, VRM and Unity acceptance.
 - A loopback-only, owner-token-protected Sunny service using an installed local Ollama model. Paid providers and fallback calls are disabled.
@@ -40,9 +41,10 @@ With Node 24 and Python 3 on PATH, run all synthetic Node checks from the reposi
 $testFiles = Get-ChildItem services,modules,tests -Recurse -Filter '*.test.mjs' -File | ForEach-Object FullName
 node --test --test-concurrency=2 @testFiles
 ./tests/unity/verify-source-copies.ps1
+./tests/unity/verify-agent-directory.ps1
 ```
 
-The browser TLS tests require PowerShell 7; set `PARADIZE_TEST_PWSH` to its absolute executable path if needed. They generate short-lived synthetic certificates in memory and do not alter the Windows certificate store. The second command requires the installed Unity editor and Windows .NET Framework tools. It checks protected source-copy storage under .NET and Unity Mono and compiles the runtime C# against Unity's .NET Standard 2.1 references. Neither command proves real-device access or a complete release journey.
+The browser TLS tests require PowerShell 7; set `PARADIZE_TEST_PWSH` to its absolute executable path if needed. They generate short-lived synthetic certificates in memory and do not alter the Windows certificate store. The Unity checks require the installed Unity editor tools and Windows .NET Framework. They check protected source-copy storage and directory behavior under .NET and Unity Mono, and compile the runtime C# against Unity's .NET Standard 2.1 references. These checks do not prove real-device access or a complete release journey.
 
 ## Codex navigation
 
