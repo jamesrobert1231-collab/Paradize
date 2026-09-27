@@ -74,3 +74,23 @@ PostgreSQL server. No production identity record or live session was created.
 
 Overall consolidation remains approximately **39%**, a planning estimate. This
 source foundation does not complete persistent-login or release acceptance.
+
+## September 27 follow-up — native Sunny session binding
+
+The Sunny server now has an explicit native identity mode using only the remote
+authority capability. Browser sessions, mixed legacy credentials and unavailable
+identity stores cannot provide access. Each request holds a revocation/expiry
+lease and rechecks authorization before inference, protected JSON or original
+file output, and STOP/resume changes. Shutdown cancels requests before the HTTP
+listener drains; late leases and ignored cancellation cannot retain admission.
+
+Independent review reproduced a continuation race between an awaited check and
+output/control changes. Synchronous checks at those final boundaries now close
+it. An early-denied incomplete upload also now closes its connection promptly.
+All **21 focused tests and 77 Sunny tests passed** on Node 24.5.0, with no failures
+or skips. These use the actual authority and HTTP with synthetic memory storage
+and model collaborators, not a production database or account.
+
+The installed launcher still uses its existing credential. Real PostgreSQL 17,
+protected native-session issuance, launcher/device lifecycle and profile-independent
+recovery remain required. See [native session contract](native-session-binding.md).

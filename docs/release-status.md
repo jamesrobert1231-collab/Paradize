@@ -4,6 +4,15 @@ PARADIZE remains a developing private Unity environment with Sunny as its conver
 
 ## Current source update
 
+- Added explicit native-session identity to Sunny, with per-request revocation/expiry leases, cancellation, and authorization checks before inference, private JSON/original-file output and STOP/resume changes. Invalid or unavailable identity cannot fall back to the legacy credential. See [native session binding](integrations/native-session-binding.md).
+- Independent review reproduced and closed a race between awaited authorization and protected output/control changes. Early denial of an incomplete upload also now closes the connection promptly. All **21 focused identity tests and 77 Sunny tests passed** on Node 24.5.0, with no failures or skips.
+- The identity tests exercise real authority and HTTP behavior with synthetic memory storage and model responses. PostgreSQL 17, native-session issuance/delivery, production Node 22, installed launcher, real-device and profile-independent recovery qualification remain open. The current launcher credential and protocol version 2 remain in use.
+- The complete publication suite passed **317 tests with zero failures or skips** on bundled Node 24.14.0. Independent source review passed after reproducing the corrected races. Graft rebuilt 94 public source maps, 771 nodes and 1800 edges; generated graph files remain excluded.
+
+This update changes staged source; it does not create live identities, pair a device, activate accounts or replace the installed player.
+
+## September 27 protected owner bootstrap
+
 - Added explicit creation and read-only loading of stable owner, installation and native-device IDs protected by Windows CurrentUser encryption and owner/SYSTEM permissions. Corrupt records, unexpected permissions, links and interrupted setup fail without replacing the owner.
 - Added a bounded inherited-pipe owner-initialization protocol using the existing PostgreSQL adapter. It creates no sessions, opens no listener and returns sanitized failure codes. Commit uncertainty is not automatically retried. See [Windows bootstrap](../services/identity/README.md).
 - All 20 focused configuration/bootstrap tests passed on Windows with Node 24.5.0. They exercise real encryption, filesystem permissions and child pipes; database behavior uses a scripted driver. Production Node 22, PostgreSQL, launcher lifecycle and native-session binding remain unqualified.
