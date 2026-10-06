@@ -40,7 +40,7 @@ After big code changes, refresh the graph with `graft build` (deterministic,
 no API key, $0).
 <!-- graft:end -->
 
-PARADIZE setup note: use `./graft.cmd` when the global `graft` command is not on PATH. The September 27 publication graph covers 96 C#, JavaScript, and Python source files across apps, packages, modules, services, scripts, and tests. Rebuild after source changes rather than treating this count as fixed. Vendor snapshots, PowerShell, SQL migrations, documentation, and other unindexed files require direct source inspection. Graph rankings and inferred edges are navigation aids; verify source behavior before drawing conclusions. See docs/integrations/graft.md for the local Kotlin compatibility patch and coverage limits.
+PARADIZE setup note: use `./graft.cmd` when the global `graft` command is not on PATH. The September 27 publication graph covers 97 C#, JavaScript, and Python source files across apps, packages, modules, services, scripts, and tests. Rebuild after source changes rather than treating this count as fixed. Vendor snapshots, PowerShell, SQL migrations, documentation, and other unindexed files require direct source inspection. Graph rankings and inferred edges are navigation aids; verify source behavior before drawing conclusions. See docs/integrations/graft.md for the local Kotlin compatibility patch and coverage limits.
 
 ## Efficient continuation — approved September 27, 2026
 

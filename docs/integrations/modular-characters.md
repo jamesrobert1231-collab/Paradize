@@ -97,3 +97,32 @@ The Blender VRM add-on provides import/export and a Python automation interface.
 4. Measure LOD, texture, draw-call and animation costs on this PC before expanding to every agent character.
 
 The test suite exercises the real Python inventory function using synthetic Blender-like objects, plus manifest tampering, missing roles, hierarchy problems, path attacks, reparse paths and fresh-output selection. It does not import Blender, render characters, or assert device performance.
+
+## Explicit cuff separation qualification — 2026-10-06
+
+The derived character fitter now checks Blender's explicit loop triangles, including
+recalculated garment triangulation after each bounded horizontal move. Its temporary
+mesh is removed on success and failure; only garment coordinates are published after
+all checks pass. Original footwear, topology, UVs, materials, weights and rig bindings
+are preserved. The maximum displacement remains 20 mm, with a 1 mm shoe vertex-normal
+envelope; this does not establish uniform physical clearance or containment.
+
+A previous qualification failed because implicit polygon tessellation missed eight
+padded-envelope triangle intersections. The failed evidence is retained. Separate
+metadata diagnostics confirmed equivalent edge connectivity and loop vertex order;
+material differences were transient Blender session identifiers. The corrected
+comparison retains edge flags, loop connectivity, actual material settings and image
+hashes while excluding transient session IDs.
+
+Fresh checks passed: 40 actual-Blender fixture checks, 13 Node inventory/authoring tests,
+and a 37-file inventory. Independent saved Blender and FBX decoding found zero direct
+or padded-envelope rest-pose intersections. Only 128 garment vertices moved, by at most
+14.001 mm horizontally; heights, other meshes, skin weights, skeleton, material nodes,
+packed textures, UVs and polygon topology match the preserved baseline.
+
+The three sampled breathing frames passed both intersection checks. One synthetic
+right-ankle local-axis rotation still produced 15 padded-envelope triangle intersections;
+this is an open movement finding. These diagnostic rotations are not anatomically
+calibrated locomotion. The result is static-passed-with-pose-findings, not character
+activation or full movement qualification. Unity import, runtime influence retention,
+Humanoid/VRM, facial animation, realistic appearance and performance remain pending.
