@@ -1,6 +1,6 @@
 # Graft setup
 
-Latest refresh, September 27, 2026: the public source produced **96 map files plus INDEX.md**, including the island agent directory, native Sunny session binding, protected Windows owner configuration and bootstrap, modular character authoring, identity, the browser gateway, the account-review register, Sunny, Unity, import/recovery tools and tests. The graph contains 817 nodes and 1827 edges. Rebuild the local cache after updating. SQL migrations, PowerShell and HTML/CSS require direct inspection. The setup-time counts below are historical.
+Latest refresh, October 6, 2026: the public source produced **97 map files plus INDEX.md**, including bounded character cuff fitting, the island agent directory, native Sunny session binding, protected Windows owner configuration and bootstrap, modular character authoring, identity, the browser gateway, the account-review register, Sunny, Unity, import/recovery tools and tests. The graph contains 827 nodes and 1854 edges. Rebuild the local cache after updating. SQL migrations, PowerShell and HTML/CSS require direct inspection. The setup-time counts below are historical.
 
 Verified on 2026-09-19 (2026-09-20 UTC): Graft **0.18.0** is installed globally and wired into **Codex through AGENTS.md**. No Claude configuration was created.
 

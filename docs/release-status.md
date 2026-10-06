@@ -66,3 +66,17 @@ Persistent owner identity and device pairing, real iPhone/browser access, reconc
 The Windows build helper requires 14 GiB free, including the 10 GiB operating reserve. Job records and output checks alone do not qualify a sandbox. Upstream inventories do not establish runtime integration. Synthetic recovery tests do not qualify recovery of production databases, media or credentials without the original Windows profile. The island's moon/tide model remains illustrative.
 
 Overall product completion remains approximately **39%**, a planning estimate rather than a measured percentage of passed acceptance criteria. Publishing source does not complete the consolidation release or the inherited unfinished Sunny/world requirements.
+
+## October 6 — character cuff source qualification
+
+The derived fitter now uses explicit Blender loop triangles on a temporary mesh,
+resolving a discrepancy that left padded footwear intersections undetected by its
+previous implicit tessellation. Forty Blender checks and thirteen Node authoring
+checks passed. A fresh export passed inventory and independent saved Blender/FBX
+rest-pose comparisons, preserving non-garment geometry, textures, weights and rig
+bindings. Front, side and back previews were rendered and inspected.
+
+One synthetic ankle pose still intersects the padded envelope. The candidate remains
+unactivated; movement, Unity import/runtime, Humanoid/VRM and final realism are open.
+The preserved failed comparison and revised comparison remain local evidence.
+Overall consolidation completion remains approximately 39%, a planning estimate.

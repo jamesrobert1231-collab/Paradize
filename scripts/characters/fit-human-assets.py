@@ -1,8 +1,114 @@
 """Fit selected CC0 mesh data. No upstream executable code is loaded."""
 import bpy
 import hashlib
+import math
 from mathutils import Vector
+from mathutils.bvhtree import BVHTree
 from mathutils.kdtree import KDTree
+
+def fit_trousers_over_shoes(trousers, shoes, *, step=.0005, envelope=.001,
+                           maximum_displacement=.02, maximum_steps=40):
+    """Resolve this authoring profile's intersecting cuffs, without changing bindings.
+
+    Work in the generated, identity-transform metre space. The padded shoe mesh is
+    a vertex-normal envelope, not a proof of uniform minimum distance. Open meshes
+    are tested for triangle intersections; no global inside/outside test is used.
+    This static correction does not qualify movement or arbitrary clothing pairs.
+    """
+    for value in (step, envelope, maximum_displacement):
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
+            raise ValueError('Invalid cuff fitting distance')
+    if step > maximum_displacement or type(maximum_steps) is not int or not 1 <= maximum_steps <= 100:
+        raise ValueError('Invalid cuff fitting limit')
+    if trousers == shoes or trousers.type != 'MESH' or shoes.type != 'MESH' or trousers.data == shoes.data:
+        raise ValueError('Separate derived meshes are required')
+    for obj in (trousers, shoes):
+        if obj.data.shape_keys is not None:
+            raise ValueError('Cuff fitting must precede shape keys')
+        for row in range(4):
+            for column in range(4):
+                value = obj.matrix_world[row][column]
+                if not math.isfinite(value) or abs(value - (1 if row == column else 0)) > 1e-7:
+                    raise ValueError('Cuff fitting requires identity transforms')
+        if not obj.data.vertices or not obj.data.polygons:
+            raise ValueError('Cuff fitting requires populated meshes')
+        for vertex in obj.data.vertices:
+            if not all(math.isfinite(value) for value in (*vertex.co, *vertex.normal)):
+                raise ValueError('Nonfinite cuff geometry')
+
+    original = [vertex.co.copy() for vertex in trousers.data.vertices]
+    positions = [point.copy() for point in original]
+    faces = [tuple(polygon.vertices) for polygon in trousers.data.polygons]
+    shoes.data.calc_loop_triangles()
+    shoe_faces = [tuple(triangle.vertices) for triangle in shoes.data.loop_triangles]
+    shoe_polygon_ids = [triangle.polygon_index for triangle in shoes.data.loop_triangles]
+    shoe_positions = [vertex.co.copy() for vertex in shoes.data.vertices]
+    actual_shoes = BVHTree.FromPolygons(shoe_positions, shoe_faces, all_triangles=True)
+    padded_shoes = BVHTree.FromPolygons(
+        [vertex.co + vertex.normal * envelope for vertex in shoes.data.vertices], shoe_faces,
+        all_triangles=True)
+    directions = [Vector((vertex.normal.x, vertex.normal.y, 0)) for vertex in trousers.data.vertices]
+    for direction in directions:
+        if direction.length > 1e-8:
+            direction.normalize()
+    # The generated cuff may touch a shoe's upper rim; unrelated upper clothing
+    # must never enter the repair even if a future asset has unexpected contacts.
+    lower = min(point.z for point in shoe_positions)
+    upper = max(point.z for point in shoe_positions) + .05
+    iterations = 0
+    # Blender can choose a different diagonal from BVHTree's implicit polygon
+    # tessellation. Recalculate the real loop triangles on an unpublished copy
+    # after each move, so checks use the same surface as the saved/rendered mesh.
+    scratch = trousers.data.copy()
+    try:
+        def cloth_tree():
+            for vertex, point in zip(scratch.vertices, positions):
+                vertex.co = point
+            scratch.update()
+            scratch.calc_loop_triangles()
+            triangles = [tuple(triangle.vertices) for triangle in scratch.loop_triangles]
+            polygon_ids = [triangle.polygon_index for triangle in scratch.loop_triangles]
+            return BVHTree.FromPolygons(positions, triangles, all_triangles=True), polygon_ids
+
+        tree, polygon_ids = cloth_tree()
+        initial_pairs = len({(polygon_ids[a], shoe_polygon_ids[b])
+                             for a, b in tree.overlap(actual_shoes)})
+        for iteration in range(maximum_steps + 1):
+            pairs = tree.overlap(padded_shoes)
+            if not pairs:
+                break
+            if iteration == maximum_steps:
+                raise ValueError('Cuff intersections remain at the step limit')
+            affected = sorted({index for triangle, _ in pairs
+                               for index in faces[polygon_ids[triangle]]})
+            for index in affected:
+                if not lower <= original[index].z <= upper or directions[index].length < .99:
+                    raise ValueError('Cuff intersection outside the supported repair region')
+                proposed = positions[index] + directions[index] * step
+                if (proposed - original[index]).length > maximum_displacement + 1e-7:
+                    raise ValueError('Cuff displacement limit exceeded')
+                positions[index] = proposed
+            iterations += 1
+            tree, polygon_ids = cloth_tree()
+        if tree.overlap(actual_shoes):
+            raise ValueError('Cuff intersections remain against original footwear')
+    finally:
+        bpy.data.meshes.remove(scratch)
+    distances = [(point - original[index]).length for index, point in enumerate(positions)]
+    # Publish coordinates only after all checks. Failures above leave both meshes
+    # unchanged, including topology, UVs, materials, weights and armature links.
+    for vertex, point in zip(trousers.data.vertices, positions):
+        vertex.co = point
+    trousers.data.update()
+    return {'method': 'bounded-horizontal-cuff-separation-v2',
+            'intersectionMethod': 'explicit Blender loop triangles',
+            'intersectionPairsBefore': initial_pairs, 'intersectionPairsAfter': 0,
+            'paddedIntersectionPairsAfter': 0, 'shoeVertexNormalEnvelopeMetres': envelope,
+            'stepMetres': step, 'maximumDisplacementMetres': maximum_displacement,
+            'maximumSteps': maximum_steps, 'stepsUsed': iterations,
+            'changedVertices': sum(distance > 1e-8 for distance in distances),
+            'largestDisplacementMetres': max(distances), 'vertexHeightsPreserved': True,
+            'qualification': 'static authoring separation only; animation and Unity pending'}
 
 def fit_asset(asset_root, manifest, stem, texture_path, base_vertices, to_world, rig, material_factory, body=None):
     def read(relative, binary=False):

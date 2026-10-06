@@ -267,7 +267,8 @@ modifier=cloth.modifiers.new('Rig','ARMATURE')
 modifier.object=rig
 
 import runpy
-fit_asset=runpy.run_path(str(Path(__file__).with_name('fit-human-assets.py')))['fit_asset']
+fitting=runpy.run_path(str(Path(__file__).with_name('fit-human-assets.py')))
+fit_asset=fitting['fit_asset']
 eyes=fit_asset(selected_assets,selected_manifest,'eyes/low-poly/low-poly',
     'eyes/materials/brown_eye.png',vertices,position,rig,material)
 hair=fit_asset(selected_assets,selected_manifest,'hair/bob01/bob01',
@@ -277,6 +278,7 @@ cloth=fit_asset(selected_assets,selected_manifest,'clothes/female_casualsuit01/f
     'clothes/female_casualsuit01/female_casualsuit01_diffuse.png',vertices,position,rig,material,body)
 shoes=fit_asset(selected_assets,selected_manifest,'clothes/shoes01/shoes01',
     'clothes/shoes01/shoes01_diffuse.png',vertices,position,rig,material,body)
+footwear_layering=fitting['fit_trousers_over_shoes'](cloth,shoes)
 cloth_mesh=cloth.data
 
 # Honor the garment's authored body-occlusion mask on this derived mesh only.
@@ -329,7 +331,7 @@ report={'sourceCommit':manifest['commit'],'heightMetres':1.75,'bodyVertices':len
     'skinSourceSha256':skin_entry['sha256'],
     'eyeVertices':len(eyes.data.vertices),'hairVertices':len(hair.data.vertices),
     'shoeVertices':len(shoes.data.vertices),
-    'bodyWeightNormalization':body_weight_normalization,
+    'bodyWeightNormalization':body_weight_normalization,'footwearLayering':footwear_layering,
     'activated':False,'qualification':'Dressed character candidate; intersections, visual review and Unity validation pending'}
 (OUT/'human-candidate.json').write_text(json.dumps(report,indent=2)+'\n')
 print('PARADIZE_HUMAN_CANDIDATE '+json.dumps(report))
