@@ -13,7 +13,10 @@ from datetime import datetime, timezone
 def character_output_directory(root, arguments):
     """Allow qualification in a new contained directory without touching existing exports."""
     if not arguments:
-        return root / '.build/characters'
+        target = root / '.build/characters'
+        if target.exists() or target.is_symlink():
+            raise ValueError('Default output exists; use a fresh qualification directory')
+        return target
     if len(arguments) != 2 or arguments[0] != '--output-directory':
         raise ValueError('Expected --output-directory with a fresh qualification path')
     relative = arguments[1]
@@ -440,4 +443,7 @@ def build_modular_manifest(root, output, components, skeleton, blender, core_man
 modular = build_modular_manifest(ROOT, OUT, [('body', body), ('clothing', cloth), ('footwear', shoes),
                                           ('hair', hair), ('eyes', eyes)], rig, bpy, manifest, selected_manifest)
 (OUT / 'human-candidate.modular.json').write_text(json.dumps(modular, indent=2, allow_nan=False)+'\n', encoding='utf-8')
+weight_reference = runpy.run_path(str(Path(__file__).with_name('weight-reference.py')))
+weight_reference['write_weight_reference'](OUT, [('body', body), ('clothing', cloth),
+                                              ('footwear', shoes), ('hair', hair), ('eyes', eyes)], rig)
 print('PARADIZE_MODULAR_INVENTORY character=sunny qualification=pending')
