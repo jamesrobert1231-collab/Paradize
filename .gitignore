@@ -27,3 +27,7 @@ apps/paradize-unity/Assets/Paradize/Generated/
 
 # graft's local repository settings — not committed.
 /.graft/
+
+# Python bytecode is generated locally by authoring checks.
+__pycache__/
+*.py[cod]

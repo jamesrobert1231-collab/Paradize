@@ -126,3 +126,195 @@ this is an open movement finding. These diagnostic rotations are not anatomicall
 calibrated locomotion. The result is static-passed-with-pose-findings, not character
 activation or full movement qualification. Unity import, runtime influence retention,
 Humanoid/VRM, facial animation, realistic appearance and performance remain pending.
+
+## Native weight preservation prototype — 2026-10-06
+
+An isolated Unity 6000.6.0f1 headless project reproduced loss of the fifth influence
+under the default importer. Custom import with eight allowed influences retained
+the fifth influence, but discarded some positive weights below 0.001 even with
+minimum weight set to zero or 1e-8. Neither setting alone qualifies preservation.
+
+A source-aware native mesh prototype restores named weights from a separately
+decoded Blender reference. It rejects ambiguous position matches with different
+weight identities. Native mesh serialization can quantize the smallest weights
+away; the prototype raises those positive weights to 1/65535 and subtracts the
+increase from the largest influence, bounded to 0.0001 per vertex. Original source
+files and weights remain unchanged. This is approximate runtime preservation,
+not bit-exact weight preservation or a production adapter.
+
+Fresh-process reload comparisons passed for all five meshes and all 17,686 source
+vertex positions, including their positive named influence sets. Maximum absolute
+weight error was 0.00002534; maximum position error was 0.000000358 metres. A separate
+Unity check found matching exposed imported vertices, normals, tangents, byte colors,
+UV channel values, effective submesh indices/topology, shared material references,
+bind poses and bone order between the imported model and saved native prefab. Active
+transform hierarchy comparisons also passed using Unity's approximate transform
+operators. This does not compare inactive components, all renderer settings, material
+internals, UV buffer formats or every submesh descriptor. A deliberately modified
+in-memory vertex failed that check. Coincident source vertices are matched by position
+and weights; this comparison alone does not prove source-to-FBX surface topology.
+
+With the test's global skin-weight setting temporarily set to Unlimited, one synthetic
+Chest local-X rotation of 15 degrees matched an independent linear-blend calculation
+within 0.000000468 metres in Unity's CPU baking path. Scale compensation was explicitly
+enabled. An earlier probe with the incorrect scale setting failed and remains retained.
+The calculation uses the saved runtime weights; it does not establish equivalence to
+Blender's posed geometry, GPU skinning, locomotion or all animations.
+
+Production remains unchanged. Its current selected quality setting is TwoBones;
+therefore a production adapter needs both source-bound preservation and an explicit
+qualified renderer/global quality policy. Next steps are integrity-bound reference
+export, bounded adapter implementation, all-influence validation, rendered player
+and joint-pose checks, and the unresolved padded ankle clearance. Full-project graphics
+qualification was stopped at its memory floor; serialized headless runs passed with
+roughly 0.5–0.7 GiB main-process memory. These measurements do not establish final player
+performance, realistic appearance, activation or release acceptance.
+
+## Source-bound weight reference export
+
+Future `build-human.py` exports also produce `human-candidate.weights.json` through
+`scripts/characters/weight-reference.py`. Schema version 1 uses the
+`makehuman-dressed-weight-reference-v1` profile and records Blender world-Z-up
+positions, all positive named deform influences, five component roles, deform bone
+names, and the sizes/SHA-256 hashes of the saved Blender and FBX artifacts. It also
+records the helper's source hash. No private absolute paths are emitted.
+
+The helper preserves the candidate's current weights without adjustment. The builder's
+earlier body normalization still applies; `sourceWeightsAdjusted: false` describes
+this helper only. Non-deform groups are omitted. Reference positions are raw mesh
+vertices transformed into Blender world space, not evaluated poses or a topology,
+UV, bind-pose or complete rig-hierarchy reference. Artifact hashes provide integrity
+binding, not author authentication or independent geometry decoding.
+
+The trusted builder requires five distinct roles and object names, the same armature,
+finite positions/weights, one to eight positive deform influences per vertex, and
+weight sums within 0.0001 of one. Vertex, bone, artifact and output sizes are bounded.
+Both artifact fingerprints are checked again before exclusive sidecar creation.
+Interrupted writes may leave an incomplete sidecar, which must not be treated as
+qualified. Reusing an existing default export directory is now rejected before
+authoring; use the documented fresh qualification output override.
+
+Ten focused Python checks and thirteen existing Node checks passed. A fresh complete
+Blender export passed the existing 37-file inventory check; a separate fresh Blender
+process independently reopened its saved source and matched every reference position
+and positive named deform weight for five meshes and 17,686 vertices. The sidecar is
+not included in the older modular inventory's verified-file count. No Unity consumer
+of this new schema is implemented yet; production native restoration, runtime quality
+policy, GPU/player tests and release acceptance remain pending.
+
+### Unity artifact identity gate
+
+`CharacterArtifactIntegrity.Verify` checks an externally supplied reviewed lowercase
+SHA-256 and exact artifact size before accepting a file. It bounds accepted artifacts
+to 512 MiB, streams hashing in 64 KiB buffers, rejects observed file/ancestor reparse
+paths and holds a read-only sharing handle during hashing. Eleven durable cases passed
+both Windows C# compilation/execution and an isolated Unity 6000.6.0f1 headless run.
+A separate actual Windows directory-junction case was rejected.
+
+This is a file identity primitive, not yet an importer integration or a reference
+schema validator. Expected hashes must come from reviewed provenance, not the same
+untrusted file. The path checks do not provide race-free containment against a hostile
+same-user process changing ancestors between inspection and opening. Nor does hashing
+ensure that a later reader sees identical bytes after the handle closes. The consumer
+must preserve the validated snapshot through parsing/restoration. No character or
+installed runtime is activated by these checks.
+
+### Verified reference loading
+
+`CharacterWeightReferenceLoader.Load` reads an owned snapshot using a reviewed
+reference size/hash, validates strict UTF-8 JSON syntax and closed schema fields,
+decodes the same text with Unity's JSON decoder, then applies semantic validation.
+It does not reopen the reference file. Duplicate decoded keys, unknown/missing
+fields, wrong types, fractional integer fields and integer overflow are rejected.
+Pre-decoding bounds include 32 nesting levels, 256 members per object, 200,000
+vertices per mesh, 500,000 total vertices and eight influences per vertex.
+
+Thirty-three Windows syntax/shape checks passed, including duplicate escaped keys,
+invalid UTF-8, missing flags, overflow and the object-member cap. The actual saved
+candidate passed closed-schema validation. Source compilation against installed
+Unity 6000.6 assemblies and .NET Standard 2.1 references passed. Initial compilation
+without the required .NET Standard reference failed; that is a compilation setup
+failure, not an Editor execution result. Actual Editor decoding/loading of this
+revision remains pending because the disk admission reserve is unavailable.
+
+The 128 MiB snapshot limit caps input size, not peak memory: the snapshot, decoded
+text and DTO graph can coexist. Returned DTOs are mutable. Referenced Blender/FBX
+identities still need verification against the reviewed reference before restoration;
+the loader's validated hash strings do not perform that verification. Importer
+wiring, native restoration, GPU/player checks and release activation remain pending.
+
+### Reference-bound artifact bundle
+
+`LoadBundle` also captures the Blender and FBX files using the hashes and sizes in
+the reviewed reference. The bundle reader copies expected identities before I/O,
+requires exactly the two fixed distinct filenames, and returns owned byte snapshots
+only after both files pass verification. This snapshot path supports up to 128 MiB
+per artifact; larger files remain preserved but require a future streaming consumer.
+Arrays and DTOs remain mutable; consumers must not change the validated data.
+
+Nine Windows bundle checks passed, including entry ordering, duplicate/path attacks,
+size limits, tampering and independence after source replacement. The actual candidate's
+14,587,938-byte Blender file and 1,264,860-byte FBX passed bound snapshot verification.
+Combined source compilation against installed Unity and .NET Standard 2.1 passed.
+Actual Editor loading, private snapshot staging into Unity's importer and native
+weight restoration remain pending. No existing assets or installed runtime changed.
+
+### Bounded runtime weight preparation
+
+`CharacterWeightPrecision.Prepare` copies one source vertex's positive named deform
+weights, sorts them deterministically and applies the prototype's 1/65535 precision
+floor to small non-largest influences. The largest influence absorbs the increase;
+an adjustment above 0.0001 is rejected. Source arrays and weight objects are not changed.
+The method rejects invalid, duplicate, unnormalized or excess influences and retains
+every supported positive name. It creates a derived runtime approximation, not an
+exact copy of original numeric weights or proof of native serialization.
+
+Eleven Windows checks passed, including tiny influence retention, normalization, repeated
+preparation stability and rejection of excessive adjustment. All 17,686 actual candidate
+vertices prepared without influence-count loss and with stable repeated preparation.
+Independent review reproduced a floor-created tie-order change; a failing regression
+confirmed it, and sorting again after adjustment fixed it. Final source review passed.
+Adapter integration remains separate. Imported-vertex matching, native mesh assignment,
+saved reload checks and actual player/pose qualification are still required.
+
+### Source-position weight matching
+
+`CharacterSourceWeightMatcher` copies source positions and weights into a grid index
+with entry and cell limits. It searches adjacent cells and accepts positions within 0.000002 metres
+on each axis. All matching source records must agree on named weights; conflicting
+coincident or nearby records fail rather than selecting an arbitrary record. Equivalent
+exact duplicates are coalesced. Each cell allows at most 64 distinct records; denser
+inputs fail explicitly. Use semantically validated, reviewed references; dictionary
+collision behavior does not provide worst-case constant lookup for hostile inputs.
+This matching represents position/weight equivalence, not
+source topology correspondence or physical distance clearance.
+
+Eight Windows checks passed, covering cell boundaries, mutation isolation, equivalent
+duplicates, ambiguity, missing positions and non-finite input. All 17,686 source
+vertices matched. The production matcher also matched all 18,721 vertices in the
+earlier isolated Unity reload receipt with complete positive named influence sets;
+maximum weight difference was 0.00002534. That replay uses historical imported data,
+not a new importer execution of the latest adapter. Actual mesh restoration and
+rendered runtime validation remain pending.
+
+### Derived native mesh adapter
+
+`CharacterNativeWeightAdapter.BuildDerivedMesh` plans source-matched weights,
+creates a clone of the imported mesh, assigns all influences through Unity's native
+weight API, and validates retained positive bone-index sets within 0.0001 tolerance.
+Validation allows native tie reordering. A failed clone is destroyed; success returns
+an owned mesh for the caller to dispose. No renderer assignment or asset write occurs.
+The caller must supply a validated reference and a neutral instance imported from
+the verified FBX snapshot. This API cannot establish those prerequisites itself.
+
+Adapter and fixture compilation against installed Unity/.NET Standard 2.1 passed.
+Source review found no blocking issue and prompted a five-influence fixture upgrade.
+The initial headless run was stopped at its resource limit before producing a result;
+the log is retained. The updated five-influence fixture has not executed. No native
+runtime pass, saved reload, source-coverage or activation claim follows.
+
+The isolated warmed project measured about 120 MB of Library data, 23 KB of incremental
+source and a 1.3 MB new FBX. Its headless incremental admission reserves 10 GiB of
+operational space plus 1 GiB of allowance; heavy build/render requirements remain
+unchanged. The failed run still retained its RAM/disk/time limits. A subsequent check
+found available RAM below the 2 GiB admission threshold, so no retry was launched.

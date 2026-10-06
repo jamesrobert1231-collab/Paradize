@@ -80,3 +80,23 @@ One synthetic ankle pose still intersects the padded envelope. The candidate rem
 unactivated; movement, Unity import/runtime, Humanoid/VRM and final realism are open.
 The preserved failed comparison and revised comparison remain local evidence.
 Overall consolidation completion remains approximately 39%, a planning estimate.
+
+## October 6 — draft character weight preservation
+
+Future authoring exports include a hash-bound positive deform-weight reference.
+New Editor utilities verify reference/artifact snapshots, reject malformed or
+unsupported schema data, match source positions without choosing conflicting weights,
+and prepare a bounded native approximation while preserving source weights. An
+unwired adapter returns a derived mesh without replacing the renderer or imported asset.
+
+The exact draft publication copy passed 90 focused Windows C# checks, 11 Python tests
+and 13 existing Node authoring tests. Loader, adapter and five-influence fixture source
+compile against installed Unity 6000.6 and .NET Standard 2.1 references. Earlier
+isolated native prototypes demonstrated saved-weight and CPU-pose behavior, but these
+results do not qualify the new adapter or installed runtime.
+
+The current adapter's headless attempt stopped at its resource limit before a result.
+The updated five-influence fixture, fresh Editor loading/restoration, complete source
+coverage, saved reload, rendered movement and runtime quality policy remain pending.
+No installed player, character, credentials, worker or scheduled action changed.
+This update is a draft for review; consolidation remains approximately 39%, an estimate.
